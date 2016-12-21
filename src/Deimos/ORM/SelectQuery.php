@@ -57,8 +57,12 @@ class SelectQuery extends Query
      */
     public function findOne($asArray = false)
     {
+        $limit = $this->storageLimit;
+
         $this->limit(1);
         $statement = $this->statementExec();
+
+        $this->storageLimit = $limit;
 
         $model = $this->getCurrentClass();
         $table = $this->getTableName();
