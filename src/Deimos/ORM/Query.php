@@ -245,9 +245,9 @@ abstract class Query
 
         $keys = explode('.', $key);
 
-        foreach ($keys as &$value)
+        foreach ($keys as $index => $value)
         {
-            $value = $this->gravis($value);
+            $keys[$index] = $this->gravis($value);
         }
 
         return implode('.', $keys);

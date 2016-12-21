@@ -88,11 +88,17 @@ class Entity extends \stdClass
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isLoaded()
     {
         return $this->state === self::STATE_LOADED;
     }
 
+    /**
+     * @return bool
+     */
     public function isCreated()
     {
         return $this->state === self::STATE_CREATED;
@@ -113,6 +119,8 @@ class Entity extends \stdClass
      * @param string $type
      *
      * @return SelectQuery
+     *
+     * @throws \InvalidArgumentException
      */
     public function relation($model, $type)
     {
@@ -121,6 +129,8 @@ class Entity extends \stdClass
 
     /**
      * @return bool
+     *
+     * @throws \InvalidArgumentException
      */
     public function delete()
     {
@@ -200,13 +210,21 @@ class Entity extends \stdClass
     }
 
     /**
+     * @param $value
+     */
+    public function __invoke($value)
+    {
+        $this->state = $value;
+    }
+
+    /**
      * @param $name
      *
      * @return bool
      */
     public function __isset($name)
     {
-        return array_key_exists($name, $this->storageOrigin);
+        return isset($this->storageOrigin[$name]);
     }
 
 }

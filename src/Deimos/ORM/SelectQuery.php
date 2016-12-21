@@ -76,7 +76,7 @@ class SelectQuery extends Query
             'tableName' => $table
         ]);
 
-        Reflection::setState($object, Entity::STATE_LOADED);
+        $object(Entity::STATE_LOADED);
 
         return $object;
     }
@@ -106,7 +106,7 @@ class SelectQuery extends Query
 
         foreach ($objects as $object)
         {
-            Reflection::setState($object, Entity::STATE_LOADED);
+            $object(Entity::STATE_LOADED);
         }
 
         return $objects;
