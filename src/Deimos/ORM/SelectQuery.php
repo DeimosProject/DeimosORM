@@ -39,8 +39,6 @@ class SelectQuery extends Query
 
         $this->fields($sqlExpression);
 
-        $this->limit(1);
-
         $statement = $this->statementExec();
 
         $count = $statement->fetch(Connection::FETCH_ASSOC);
