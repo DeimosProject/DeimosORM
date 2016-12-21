@@ -209,4 +209,12 @@ class Entity extends \stdClass
         return array_key_exists($name, $this->storageOrigin);
     }
 
+    /**
+     * @return string
+     */
+    public function getClassName()
+    {
+        return static::class;
+    }
+
 }

@@ -123,9 +123,7 @@ class Reflection
      */
     public static function setTableName(Entity $object, $tableName)
     {
-        $className = get_class($object);
-
-        $refObject = static::getProperty($className, 'tableName');
+        $refObject = static::getProperty($object->getClassName(), 'tableName');
 
         $refObject->setValue($object, $tableName);
     }
@@ -136,9 +134,7 @@ class Reflection
      */
     public static function setState(Entity $object, $state)
     {
-        $className = get_class($object);
-
-        $refObject = static::getProperty($className, 'state');
+        $refObject = static::getProperty($object->getClassName(), 'state');
 
         $refObject->setValue($object, $state);
     }
