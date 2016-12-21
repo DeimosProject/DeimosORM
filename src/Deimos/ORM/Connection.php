@@ -24,28 +24,6 @@ class Connection extends \PDO
     }
 
     /**
-     * @param string $dsn
-     * @param string $username
-     * @param string $password
-     * @param array  $options
-     *
-     * @return static
-     */
-    public static function sharedInstance($dsn, $username, $password, $options = array())
-    {
-        $options += [
-            static::ATTR_DEFAULT_FETCH_MODE       => static::FETCH_ASSOC,
-            static::ATTR_EMULATE_PREPARES         => true,
-            static::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-            static::ATTR_PERSISTENT               => false,
-            static::ATTR_ERRMODE                  => static::ERRMODE_EXCEPTION,
-            static::MYSQL_ATTR_INIT_COMMAND       => 'SET NAMES utf8mb4'
-        ];
-
-        return new static($dsn, $username, $password, $options);
-    }
-
-    /**
      * @param string $name
      *
      * @return static
@@ -65,6 +43,28 @@ class Connection extends \PDO
         }
 
         return static::$connections[$name];
+    }
+
+    /**
+     * @param string $dsn
+     * @param string $username
+     * @param string $password
+     * @param array  $options
+     *
+     * @return static
+     */
+    public static function sharedInstance($dsn, $username, $password, $options = array())
+    {
+        $options += [
+            static::ATTR_DEFAULT_FETCH_MODE       => static::FETCH_ASSOC,
+            static::ATTR_EMULATE_PREPARES         => true,
+            static::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+            static::ATTR_PERSISTENT               => false,
+            static::ATTR_ERRMODE                  => static::ERRMODE_EXCEPTION,
+            static::MYSQL_ATTR_INIT_COMMAND       => 'SET NAMES utf8mb4'
+        ];
+
+        return new static($dsn, $username, $password, $options);
     }
 
 }

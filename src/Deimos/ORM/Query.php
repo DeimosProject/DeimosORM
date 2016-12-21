@@ -157,91 +157,14 @@ abstract class Query
     }
 
     /**
-     * @return array|mixed
-     */
-    protected function getCurrentClass()
-    {
-        $model = current($this->storageModels);
-
-        if (is_array($model))
-        {
-            $model = current($model);
-        }
-
-        if (!class_exists($model))
-        {
-            return Entity::class;
-        }
-
-        return $model;
-    }
-
-    /**
-     * @return array|mixed|string
-     */
-    protected function getTableName()
-    {
-        $model = current($this->storageModels);
-
-        if (is_array($model))
-        {
-            $model = current($model);
-        }
-
-        if (!class_exists($model))
-        {
-            return $model;
-        }
-
-        return Reflection::getTableName($model);
-    }
-
-    /**
-     * build join
-     */
-    protected function buildJoin()
-    {
-        $this->join = implode(' ', $this->storageJoin);
-    }
-
-    /**
-     * build order by
-     */
-    protected function buildOrderBy()
-    {
-        $this->orderBy = implode(' ', $this->storageOrderBy);
-    }
-
-    /**
-     * build group by
-     */
-    protected function buildGroupBy()
-    {
-        $this->groupBy = implode(' ', $this->storageGroupBy);
-    }
-
-    /**
      * @param               $model
      * @param SQLExpression $expression
-     * @param               $type
+     *
+     * @return static
      */
-    protected function setJoin($model, $expression, $type)
+    public function join($model, SQLExpression $expression)
     {
-        $this->storageParameters = array_merge($this->storageParameters, $expression->getParameters());
-        $this->storageJoin[]     = implode(' ', [
-            $type . ' JOIN',
-            $this->buildTable($model),
-            'ON',
-            $expression->getSQL()
-        ]);
-    }
-
-    /**
-     * @return array
-     */
-    public function parameters()
-    {
-        return array_merge($this->storageParameters, $this->parameters);
+        return $this->joinWithType($model, $expression);
     }
 
     /**
@@ -261,34 +184,17 @@ abstract class Query
     /**
      * @param               $model
      * @param SQLExpression $expression
-     *
-     * @return static
+     * @param               $type
      */
-    public function join($model, SQLExpression $expression)
+    protected function setJoin($model, $expression, $type)
     {
-        return $this->joinWithType($model, $expression);
-    }
-
-    /**
-     * @param               $model
-     * @param SQLExpression $expression
-     *
-     * @return static
-     */
-    public function joinRight($model, SQLExpression $expression)
-    {
-        return $this->joinWithType($model, $expression, 'RIGHT');
-    }
-
-    /**
-     * @param               $model
-     * @param SQLExpression $expression
-     *
-     * @return static
-     */
-    public function joinLeft($model, SQLExpression $expression)
-    {
-        return $this->joinWithType($model, $expression, 'LEFT');
+        $this->storageParameters = array_merge($this->storageParameters, $expression->getParameters());
+        $this->storageJoin[]     = implode(' ', [
+            $type . ' JOIN',
+            $this->buildTable($model),
+            'ON',
+            $expression->getSQL()
+        ]);
     }
 
     /**
@@ -320,99 +226,6 @@ abstract class Query
     }
 
     /**
-     * build fields
-     */
-    protected function buildFields()
-    {
-        $fields = [];
-
-        foreach ($this->storageFields as $fieldData)
-        {
-            if (is_array($fieldData))
-            {
-                $alias = key($fieldData);
-                $field = current($fieldData);
-
-                $fields[] = $this->buildKey($field) . ' AS `' . $alias . '`';
-            }
-            else
-            {
-                $fields[] = $this->buildKey($fieldData);
-            }
-        }
-
-        $this->fields = implode(', ', $fields);
-    }
-
-    /**
-     * build models
-     */
-    protected function buildModels()
-    {
-        $models = [];
-
-        foreach ($this->storageModels as $modelData)
-        {
-            $models[] = $this->buildTable($modelData);
-        }
-
-        $this->models = implode(', ', $models);
-    }
-
-    /**
-     * @param array $parameters
-     *
-     * @return string
-     */
-    protected function buildInValue(array $parameters)
-    {
-        $string = str_repeat('?, ', count($parameters));
-
-        $this->parameters = array_merge($this->parameters, $parameters);
-
-        return '(' . rtrim($string, ', ') . ')';
-    }
-
-    /**
-     * @param SQLExpression $sqlExpression
-     *
-     * @return string
-     */
-    protected function buildSQLExpression(SQLExpression $sqlExpression)
-    {
-        $this->parameters = array_merge($this->parameters, $sqlExpression->getParameters());
-
-        return $sqlExpression->getSQL();
-    }
-
-    /**
-     * @param mixed $value
-     *
-     * @return string
-     */
-    protected function buildValue($value)
-    {
-        if (is_array($value))
-        {
-            return $this->buildInValue($value);
-        }
-
-        if ($value instanceof SQLExpression)
-        {
-            return $this->buildSQLExpression($value);
-        }
-
-        if (is_null($value))
-        {
-            return 'NULL';
-        }
-
-        $this->parameters[] = $value;
-
-        return '?';
-    }
-
-    /**
      * @param string|SQLExpression $key
      * @param bool                 $apostrophe
      *
@@ -441,6 +254,18 @@ abstract class Query
     }
 
     /**
+     * @param SQLExpression $sqlExpression
+     *
+     * @return string
+     */
+    protected function buildSQLExpression(SQLExpression $sqlExpression)
+    {
+        $this->parameters = array_merge($this->parameters, $sqlExpression->getParameters());
+
+        return $sqlExpression->getSQL();
+    }
+
+    /**
      * @param $value
      *
      * @return string
@@ -451,146 +276,25 @@ abstract class Query
     }
 
     /**
-     * @param array ...$args
+     * @param               $model
+     * @param SQLExpression $expression
      *
-     * @return string
+     * @return static
      */
-    protected function buildWhereOne(...$args) // 2 or 3 [1,1],
+    public function joinRight($model, SQLExpression $expression)
     {
-        $result = $this->buildKey($args[0]);
-
-        if (count($args) === 3)
-        {
-            $result .= ' ' . $args[1] . ' ' . $this->buildValue($args[2]);
-        }
-        else
-        {
-            $value = $this->buildValue($args[1]);
-
-            if ($value === 'NULL')
-            {
-                $result .= ' IS ' . $value;
-            }
-            else if (strpos($value, '(') === 0)
-            {
-                $result .= ' IN ' . $value;
-            }
-            else
-            {
-                $result .= ' = ' . $value;
-            }
-        }
-
-        return $result;
+        return $this->joinWithType($model, $expression, 'RIGHT');
     }
 
     /**
-     * @param array  $args
-     * @param string $defaultOperator
+     * @param               $model
+     * @param SQLExpression $expression
      *
-     * @return string
+     * @return static
      */
-    protected function buildWhereOperator(array $args, $defaultOperator = 'AND')
+    public function joinLeft($model, SQLExpression $expression)
     {
-        $storage  = [];
-        $key      = key($args);
-        $operator = is_string($key) ? $key : $defaultOperator;
-
-        foreach ($args as $arg)
-        {
-            $isArray = is_array(current($arg));
-
-            if ($isArray)
-            {
-                $storage[] = $this->buildWhereOperator($arg, $operator);
-            }
-            else
-            {
-                $storage[] = [
-                    $operator,
-                    call_user_func_array([$this, 'buildWhereOne'], $arg)
-                ];
-            }
-        }
-
-        if (count($storage) === 1)
-        {
-            return current($storage);
-        }
-
-        return $storage;
-    }
-
-    /**
-     * build where
-     */
-    protected function buildWhere()
-    {
-        /**
-         * @var array $where
-         */
-        $where = $this->buildWhereOperator($this->storageWhere);
-
-        $this->where         = '';
-        $this->allowOperator = false;
-        $this->buildIf2String([$where], $this->where);
-    }
-
-    /**
-     * build having
-     */
-    protected function buildHaving()
-    {
-        /**
-         * @var array $having
-         */
-        $having = $this->buildWhereOperator($this->storageHaving);
-
-        $this->having        = '';
-        $this->allowOperator = false;
-        $this->buildIf2String([$having], $this->having);
-    }
-
-    /**
-     * @param array  $storage
-     * @param string $toStorage
-     */
-    protected function buildIf2String(array $storage, &$toStorage)
-    {
-
-        $toStorage .= '(';
-        $lastOperator = '';
-
-        foreach ($storage as $key => $value)
-        {
-
-            if (is_string($value[0]))
-            {
-
-                $this->allowOperator = true;
-                $lastOperator        = $value[0];
-
-                if ($key)
-                {
-                    $toStorage .= ' ' . $lastOperator . ' ';
-                }
-
-                $toStorage .= ' (' . $value[1] . ') ';
-            }
-            else
-            {
-
-                if ($this->allowOperator)
-                {
-                    $toStorage .= ' ' . $lastOperator . ' ';
-                }
-
-                $this->buildIf2String($value, $toStorage);
-            }
-        }
-
-        $toStorage .= ')';
-
+        return $this->joinWithType($model, $expression, 'LEFT');
     }
 
     /**
@@ -707,11 +411,9 @@ abstract class Query
      *
      * @return static
      */
-    public function limit($limit)
+    public function take($limit)
     {
-        $this->storageLimit = $limit;
-
-        return $this;
+        return $this->limit($limit);
     }
 
     /**
@@ -719,19 +421,9 @@ abstract class Query
      *
      * @return static
      */
-    public function take($limit)
+    public function limit($limit)
     {
-        return $this->limit($limit);
-    }
-
-    /**
-     * @param $offset
-     *
-     * @return static
-     */
-    public function offset($offset)
-    {
-        $this->storageOffset = $offset;
+        $this->storageLimit = $limit;
 
         return $this;
     }
@@ -744,6 +436,18 @@ abstract class Query
     public function skip($offset)
     {
         return $this->offset($offset);
+    }
+
+    /**
+     * @param $offset
+     *
+     * @return static
+     */
+    public function offset($offset)
+    {
+        $this->storageOffset = $offset;
+
+        return $this;
     }
 
     /**
@@ -774,6 +478,325 @@ abstract class Query
         $this->storageSet[] = $this->buildKey($column) . ' = ' . $this->buildValue($value);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $sql              = [];
+        $this->parameters = [];
+
+        foreach ($this->operators as $name => $operator)
+        {
+            $ucFirst = ucfirst($name);
+
+            $methodName = 'build' . $ucFirst;
+
+            $storageName = 'storage' . $ucFirst;
+
+            if (!empty($this->{$storageName}))
+            {
+                $this->{$methodName}();
+
+                $sql[] = $operator . ' ' . $this->{$name};
+            }
+            else if (!empty($this->defaults[$name]))
+            {
+                $sql[] = $operator . ' ' . $this->defaults[$name];
+            }
+        }
+
+        return implode(' ', $sql);
+    }
+
+    /**
+     * @return array|mixed
+     */
+    protected function getCurrentClass()
+    {
+        $model = current($this->storageModels);
+
+        if (is_array($model))
+        {
+            $model = current($model);
+        }
+
+        if (!class_exists($model))
+        {
+            return Entity::class;
+        }
+
+        return $model;
+    }
+
+    /**
+     * @return array|mixed|string
+     */
+    protected function getTableName()
+    {
+        $model = current($this->storageModels);
+
+        if (is_array($model))
+        {
+            $model = current($model);
+        }
+
+        if (!class_exists($model))
+        {
+            return $model;
+        }
+
+        return Reflection::getTableName($model);
+    }
+
+    /**
+     * build join
+     */
+    protected function buildJoin()
+    {
+        $this->join = implode(' ', $this->storageJoin);
+    }
+
+    /**
+     * build order by
+     */
+    protected function buildOrderBy()
+    {
+        $this->orderBy = implode(' ', $this->storageOrderBy);
+    }
+
+    /**
+     * build group by
+     */
+    protected function buildGroupBy()
+    {
+        $this->groupBy = implode(' ', $this->storageGroupBy);
+    }
+
+    /**
+     * build fields
+     */
+    protected function buildFields()
+    {
+        $fields = [];
+
+        foreach ($this->storageFields as $fieldData)
+        {
+            if (is_array($fieldData))
+            {
+                $alias = key($fieldData);
+                $field = current($fieldData);
+
+                $fields[] = $this->buildKey($field) . ' AS `' . $alias . '`';
+            }
+            else
+            {
+                $fields[] = $this->buildKey($fieldData);
+            }
+        }
+
+        $this->fields = implode(', ', $fields);
+    }
+
+    /**
+     * build models
+     */
+    protected function buildModels()
+    {
+        $models = [];
+
+        foreach ($this->storageModels as $modelData)
+        {
+            $models[] = $this->buildTable($modelData);
+        }
+
+        $this->models = implode(', ', $models);
+    }
+
+    /**
+     * @param array ...$args
+     *
+     * @return string
+     */
+    protected function buildWhereOne(...$args) // 2 or 3 [1,1],
+    {
+        $result = $this->buildKey($args[0]);
+
+        if (count($args) === 3)
+        {
+            $result .= ' ' . $args[1] . ' ' . $this->buildValue($args[2]);
+        }
+        else
+        {
+            $value = $this->buildValue($args[1]);
+
+            if ($value === 'NULL')
+            {
+                $result .= ' IS ' . $value;
+            }
+            else if (strpos($value, '(') === 0)
+            {
+                $result .= ' IN ' . $value;
+            }
+            else
+            {
+                $result .= ' = ' . $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return string
+     */
+    protected function buildValue($value)
+    {
+        if (is_array($value))
+        {
+            return $this->buildInValue($value);
+        }
+
+        if ($value instanceof SQLExpression)
+        {
+            return $this->buildSQLExpression($value);
+        }
+
+        if (is_null($value))
+        {
+            return 'NULL';
+        }
+
+        $this->parameters[] = $value;
+
+        return '?';
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return string
+     */
+    protected function buildInValue(array $parameters)
+    {
+        $string = str_repeat('?, ', count($parameters));
+
+        $this->parameters = array_merge($this->parameters, $parameters);
+
+        return '(' . rtrim($string, ', ') . ')';
+    }
+
+    /**
+     * build where
+     */
+    protected function buildWhere()
+    {
+        /**
+         * @var array $where
+         */
+        $where = $this->buildWhereOperator($this->storageWhere);
+
+        $this->where         = '';
+        $this->allowOperator = false;
+        $this->buildIf2String([$where], $this->where);
+    }
+
+    /**
+     * @param array  $args
+     * @param string $defaultOperator
+     *
+     * @return string
+     */
+    protected function buildWhereOperator(array $args, $defaultOperator = 'AND')
+    {
+        $storage  = [];
+        $key      = key($args);
+        $operator = is_string($key) ? $key : $defaultOperator;
+
+        foreach ($args as $arg)
+        {
+            $isArray = is_array(current($arg));
+
+            if ($isArray)
+            {
+                $storage[] = $this->buildWhereOperator($arg, $operator);
+            }
+            else
+            {
+                $storage[] = [
+                    $operator,
+                    call_user_func_array([$this, 'buildWhereOne'], $arg)
+                ];
+            }
+        }
+
+        if (count($storage) === 1)
+        {
+            return current($storage);
+        }
+
+        return $storage;
+    }
+
+    /**
+     * @param array  $storage
+     * @param string $toStorage
+     */
+    protected function buildIf2String(array $storage, &$toStorage)
+    {
+
+        $toStorage .= '(';
+        $lastOperator = '';
+
+        foreach ($storage as $key => $value)
+        {
+
+            if (is_string($value[0]))
+            {
+
+                $this->allowOperator = true;
+                $lastOperator        = $value[0];
+
+                if ($key)
+                {
+                    $toStorage .= ' ' . $lastOperator . ' ';
+                }
+
+                $toStorage .= ' (' . $value[1] . ') ';
+            }
+            else
+            {
+
+                if ($this->allowOperator)
+                {
+                    $toStorage .= ' ' . $lastOperator . ' ';
+                }
+
+                $this->buildIf2String($value, $toStorage);
+            }
+        }
+
+        $toStorage .= ')';
+
+    }
+
+    /**
+     * build having
+     */
+    protected function buildHaving()
+    {
+        /**
+         * @var array $having
+         */
+        $having = $this->buildWhereOperator($this->storageHaving);
+
+        $this->having        = '';
+        $this->allowOperator = false;
+        $this->buildIf2String([$having], $this->having);
     }
 
     /**
@@ -810,34 +833,17 @@ abstract class Query
     }
 
     /**
-     * @return string
+     * @param null|string $sql
+     * @param array       $parameters
+     *
+     * @return \PDOStatement
      */
-    public function __toString()
+    protected function statementExec($sql = null, array $parameters = [])
     {
-        $sql              = [];
-        $this->parameters = [];
+        $statement = $this->statement($sql);
+        $statement->execute($parameters ? $parameters : $this->parameters());
 
-        foreach ($this->operators as $name => $operator)
-        {
-            $ucFirst = ucfirst($name);
-
-            $methodName = 'build' . $ucFirst;
-
-            $storageName = 'storage' . $ucFirst;
-
-            if (!empty($this->{$storageName}))
-            {
-                $this->{$methodName}();
-
-                $sql[] = $operator . ' ' . $this->{$name};
-            }
-            else if (!empty($this->defaults[$name]))
-            {
-                $sql[] = $operator . ' ' . $this->defaults[$name];
-            }
-        }
-
-        return implode(' ', $sql);
+        return $statement;
     }
 
     /**
@@ -853,17 +859,11 @@ abstract class Query
     }
 
     /**
-     * @param null|string $sql
-     * @param array       $parameters
-     *
-     * @return \PDOStatement
+     * @return array
      */
-    protected function statementExec($sql = null, array $parameters = [])
+    public function parameters()
     {
-        $statement = $this->statement($sql);
-        $statement->execute($parameters ? $parameters : $this->parameters());
-
-        return $statement;
+        return array_merge($this->storageParameters, $this->parameters);
     }
 
 }

@@ -57,27 +57,19 @@ class Entity extends \stdClass
         }
     }
 
-    public function isLoaded()
-    {
-        return $this->state === self::STATE_LOADED;
-    }
-
-    public function isCreated()
-    {
-        return $this->state === self::STATE_CREATED;
-    }
-
     /**
-     * @return string
+     * @param $name
+     *
+     * @return mixed
      */
-    protected function tableName()
+    public function __get($name)
     {
-        if ($this->isLoaded())
+        if (isset($this->storageModify[$name]))
         {
-            return $this->tableName;
+            return $this->storageModify[$name];
         }
 
-        return Reflection::getTableName(static::class);
+        return $this->getOrigin($name);
     }
 
     /**
@@ -96,19 +88,24 @@ class Entity extends \stdClass
         }
     }
 
+    public function isLoaded()
+    {
+        return $this->state === self::STATE_LOADED;
+    }
+
+    public function isCreated()
+    {
+        return $this->state === self::STATE_CREATED;
+    }
+
     /**
      * @param $name
      *
      * @return mixed
      */
-    public function __get($name)
+    public function getOrigin($name)
     {
-        if (isset($this->storageModify[$name]))
-        {
-            return $this->storageModify[$name];
-        }
-
-        return $this->getOrigin($name);
+        return $this->storageOrigin[$name];
     }
 
     /**
@@ -120,16 +117,6 @@ class Entity extends \stdClass
     public function relation($model, $type)
     {
         return $this->builder->relation($this, $model, $type);
-    }
-
-    /**
-     * @param $name
-     *
-     * @return mixed
-     */
-    public function getOrigin($name)
-    {
-        return $this->storageOrigin[$name];
     }
 
     /**
@@ -156,12 +143,6 @@ class Entity extends \stdClass
         }
 
         return $isDelete;
-    }
-
-    protected function modify2Origin()
-    {
-        $this->storageOrigin = array_merge($this->storageOrigin, $this->storageModify);
-        $this->storageModify = [];
     }
 
     /**
@@ -197,6 +178,25 @@ class Entity extends \stdClass
         }
 
         return $id > 0;
+    }
+
+    /**
+     * @return string
+     */
+    protected function tableName()
+    {
+        if ($this->isLoaded())
+        {
+            return $this->tableName;
+        }
+
+        return Reflection::getTableName(static::class);
+    }
+
+    protected function modify2Origin()
+    {
+        $this->storageOrigin = array_merge($this->storageOrigin, $this->storageModify);
+        $this->storageModify = [];
     }
 
     /**

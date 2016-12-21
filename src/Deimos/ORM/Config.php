@@ -34,6 +34,25 @@ class Config
             static::$modelConfig[$key] : [];
     }
 
+    protected static function init()
+    {
+        foreach (static::$storage as $value)
+        {
+
+            $type = static::getProxyRequired($value, 'type');
+
+            if (in_array($type, [Builder::MANY2MANY, Builder::ONE2ONE], true))
+            {
+                static::initGMany($value, $type);
+            }
+            else
+            {
+                static::initOneToMany($value, $type);
+            }
+
+        }
+    }
+
     protected static function getProxyRequired($value, $key)
     {
         if (array_key_exists($key, $value))
@@ -42,6 +61,45 @@ class Config
         }
 
         throw new \InvalidArgumentException("Required key '{$key}' not found");
+    }
+
+    protected static function initGMany($value, $type)
+    {
+        $rightObject = static::getProxyRequired($value, 'right');
+        $leftObject  = static::getProxyRequired($value, 'left');
+
+        $right = Reflection::getTableName($rightObject);
+        $left  = Reflection::getTableName($leftObject);
+
+        $rightPK = Reflection::getPrimaryKey($rightObject);
+        $leftPK  = Reflection::getPrimaryKey($leftObject);
+
+        $defaultTable = $left . ucfirst($right);
+        $tableName    = static::getProxy($value, 'tableName', $defaultTable);
+
+        $singularizeRight = Inflector::singularize($right);
+        $singularizeLeft  = Inflector::singularize($left);
+
+        $rightKey = static::getProxy($value, 'rightKey', $singularizeRight . ucfirst($rightPK));
+        $leftKey  = static::getProxy($value, 'leftKey', $singularizeLeft . ucfirst($leftPK));
+
+        static::$modelConfig[$right][$type][$left] = [
+            'model'      => $singularizeLeft,
+            'tableName'  => $tableName,
+            'currentPK'  => $leftPK,
+            'currentKey' => $leftKey,
+            'selfPK'     => $rightPK,
+            'selfKey'    => $rightKey
+        ];
+
+        static::$modelConfig[$left][$type][$right] = [
+            'model'      => $singularizeRight,
+            'tableName'  => $tableName,
+            'currentPK'  => $rightPK,
+            'currentKey' => $rightKey,
+            'selfPK'     => $leftPK,
+            'selfKey'    => $leftKey
+        ];
     }
 
     protected static function getProxy($value, $key, $default = null)
@@ -85,64 +143,6 @@ class Config
             'selfKey'    => $itemsKey,
         ];
 
-    }
-
-    protected static function initGMany($value, $type)
-    {
-        $rightObject = static::getProxyRequired($value, 'right');
-        $leftObject  = static::getProxyRequired($value, 'left');
-
-        $right = Reflection::getTableName($rightObject);
-        $left  = Reflection::getTableName($leftObject);
-
-        $rightPK = Reflection::getPrimaryKey($rightObject);
-        $leftPK  = Reflection::getPrimaryKey($leftObject);
-
-        $defaultTable = $left . ucfirst($right);
-        $tableName    = static::getProxy($value, 'tableName', $defaultTable);
-
-        $singularizeRight = Inflector::singularize($right);
-        $singularizeLeft  = Inflector::singularize($left);
-
-        $rightKey = static::getProxy($value, 'rightKey', $singularizeRight . ucfirst($rightPK));
-        $leftKey  = static::getProxy($value, 'leftKey', $singularizeLeft . ucfirst($leftPK));
-
-        static::$modelConfig[$right][$type][$left] = [
-            'model'      => $singularizeLeft,
-            'tableName'  => $tableName,
-            'currentPK'  => $leftPK,
-            'currentKey' => $leftKey,
-            'selfPK'     => $rightPK,
-            'selfKey'    => $rightKey
-        ];
-
-        static::$modelConfig[$left][$type][$right] = [
-            'model'      => $singularizeRight,
-            'tableName'  => $tableName,
-            'currentPK'  => $rightPK,
-            'currentKey' => $rightKey,
-            'selfPK'     => $leftPK,
-            'selfKey'    => $leftKey
-        ];
-    }
-
-    protected static function init()
-    {
-        foreach (static::$storage as $value)
-        {
-
-            $type = static::getProxyRequired($value, 'type');
-
-            if (in_array($type, [Builder::MANY2MANY, Builder::ONE2ONE], true))
-            {
-                static::initGMany($value, $type);
-            }
-            else
-            {
-                static::initOneToMany($value, $type);
-            }
-
-        }
     }
 
 }

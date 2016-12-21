@@ -28,43 +28,6 @@ class Reflection
     protected static $pkList = [];
 
     /**
-     * @param $class
-     *
-     * @return \ReflectionClass
-     */
-    protected static function reflectionClass($class)
-    {
-        if (!isset(static::$refClass[$class]))
-        {
-            static::$refClass[$class] = new \ReflectionClass($class);
-        }
-
-        return static::$refClass[$class];
-    }
-
-    /**
-     * @param string $class
-     * @param string $name
-     *
-     * @return \ReflectionProperty
-     */
-    protected static function getProperty($class, $name)
-    {
-        if (!isset(static::$refProperties[$name]))
-        {
-            $refClass = static::reflectionClass($class);
-
-            /**
-             * @var $object \ReflectionProperty
-             */
-            static::$refProperties[$name] = $object = $refClass->getProperty($name);
-            $object->setAccessible(true);
-        }
-
-        return static::$refProperties[$name];
-    }
-
-    /**
      * @param string $class
      *
      * @return string
@@ -93,6 +56,43 @@ class Reflection
         }
 
         return static::$tableList[$class];
+    }
+
+    /**
+     * @param string $class
+     * @param string $name
+     *
+     * @return \ReflectionProperty
+     */
+    protected static function getProperty($class, $name)
+    {
+        if (!isset(static::$refProperties[$name]))
+        {
+            $refClass = static::reflectionClass($class);
+
+            /**
+             * @var $object \ReflectionProperty
+             */
+            static::$refProperties[$name] = $object = $refClass->getProperty($name);
+            $object->setAccessible(true);
+        }
+
+        return static::$refProperties[$name];
+    }
+
+    /**
+     * @param $class
+     *
+     * @return \ReflectionClass
+     */
+    protected static function reflectionClass($class)
+    {
+        if (!isset(static::$refClass[$class]))
+        {
+            static::$refClass[$class] = new \ReflectionClass($class);
+        }
+
+        return static::$refClass[$class];
     }
 
     /**

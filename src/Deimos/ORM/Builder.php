@@ -43,17 +43,6 @@ class Builder
     }
 
     /**
-     * @param       $sql
-     * @param array $parameters
-     *
-     * @return SQLExpression
-     */
-    public function sqlExression($sql, array $parameters = [])
-    {
-        return new SQLExpression($sql, $parameters);
-    }
-
-    /**
      * @return Connection
      */
     public function connection()
@@ -75,6 +64,42 @@ class Builder
     public function rawQuery($sql, array $parameters = [])
     {
         return $this->query()->raw($sql, $parameters);
+    }
+
+    /**
+     * @return SelectQuery
+     */
+    public function query()
+    {
+        $query = $this->options['query'];
+
+        return new $query($this);
+    }
+
+    /**
+     * @param Entity $entity
+     * @param string $model
+     * @param string $type
+     *
+     * @return SelectQuery
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function relation(Entity $entity, $model, $type)
+    {
+        $table = Reflection::getTableName($model);
+
+        if ($type === static::MANY2MANY)
+        {
+            return $this->relationMany2Many($entity, $table, $model);
+        }
+
+        if ($type === static::ONE2MANY)
+        {
+            return $this->relationOne2Many($entity, $table, $model);
+        }
+
+        return $this->relationOne2One($entity, $table, $model);
     }
 
     /**
@@ -104,6 +129,27 @@ class Builder
             ->fields('right.*')
             ->join(['leftRight' => $data['tableName']], $exression)
             ->where('leftRight.' . $data['selfKey'], $entity->{$data['selfPK']});
+    }
+
+    /**
+     * @param       $sql
+     * @param array $parameters
+     *
+     * @return SQLExpression
+     */
+    public function sqlExression($sql, array $parameters = [])
+    {
+        return new SQLExpression($sql, $parameters);
+    }
+
+    /**
+     * @param $class
+     *
+     * @return SelectQuery
+     */
+    public function queryEntity($class)
+    {
+        return $this->query()->model($class);
     }
 
     /**
@@ -145,52 +191,6 @@ class Builder
     }
 
     /**
-     * @param Entity $entity
-     * @param string $model
-     * @param string $type
-     *
-     * @return SelectQuery
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function relation(Entity $entity, $model, $type)
-    {
-        $table = Reflection::getTableName($model);
-
-        if ($type === static::MANY2MANY)
-        {
-            return $this->relationMany2Many($entity, $table, $model);
-        }
-
-        if ($type === static::ONE2MANY)
-        {
-            return $this->relationOne2Many($entity, $table, $model);
-        }
-
-        return $this->relationOne2One($entity, $table, $model);
-    }
-
-    /**
-     * @return SelectQuery
-     */
-    public function query()
-    {
-        $query = $this->options['query'];
-
-        return new $query($this);
-    }
-
-    /**
-     * @param $class
-     *
-     * @return SelectQuery
-     */
-    public function queryEntity($class)
-    {
-        return $this->query()->model($class);
-    }
-
-    /**
      * @return InsertQuery
      */
     public function create()
@@ -213,6 +213,16 @@ class Builder
     }
 
     /**
+     * @param $class
+     *
+     * @return UpdateQuery
+     */
+    public function updateEntity($class)
+    {
+        return $this->update()->model($class);
+    }
+
+    /**
      * @return UpdateQuery
      */
     public function update()
@@ -225,11 +235,11 @@ class Builder
     /**
      * @param $class
      *
-     * @return UpdateQuery
+     * @return DeleteQuery
      */
-    public function updateEntity($class)
+    public function deleteEntity($class)
     {
-        return $this->update()->model($class);
+        return $this->delete()->model($class);
     }
 
     /**
@@ -240,16 +250,6 @@ class Builder
         $delete = $this->options['delete'];
 
         return new $delete($this);
-    }
-
-    /**
-     * @param $class
-     *
-     * @return DeleteQuery
-     */
-    public function deleteEntity($class)
-    {
-        return $this->delete()->model($class);
     }
 
 }
