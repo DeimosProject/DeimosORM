@@ -853,9 +853,21 @@ abstract class Query
      */
     protected function statement($sql = null)
     {
+        static $statements = [];
+
         $connection = $this->builder->connection();
 
-        return $connection->prepare($sql ? $sql : $this);
+        /**
+         * @var $sqlQuery string
+         */
+        $sqlQuery = $sql ? : $this;
+
+        if (empty($statements[$sqlQuery]))
+        {
+            $statements[$sqlQuery] = $connection->prepare($sqlQuery);
+        }
+
+        return $statements[$sqlQuery];
     }
 
     /**
