@@ -860,7 +860,7 @@ abstract class Query
         /**
          * @var $sqlQuery string
          */
-        $sqlQuery = $sql ? : $this;
+        $sqlQuery = $sql ? : (string)$this;
 
         if (empty($statements[$sqlQuery]))
         {
