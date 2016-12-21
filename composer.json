@@ -1,5 +1,6 @@
 {
     "name": "deimos/orm",
+    "license": "MIT",
     "authors": [
         {
             "name": "rez1dent3",
