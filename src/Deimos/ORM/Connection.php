@@ -38,7 +38,7 @@ class Connection extends \PDO
                 $config['dsn'],
                 $config['username'],
                 $config['password'],
-                $config['options']
+                isset($config['options']) ? $config['options'] : []
             );
         }
 
@@ -53,7 +53,7 @@ class Connection extends \PDO
      *
      * @return static
      */
-    public static function sharedInstance($dsn, $username, $password, $options = array())
+    public static function sharedInstance($dsn, $username, $password, array $options = [])
     {
         $options += [
             static::ATTR_DEFAULT_FETCH_MODE       => static::FETCH_ASSOC,
