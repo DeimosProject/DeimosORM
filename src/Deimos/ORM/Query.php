@@ -68,6 +68,11 @@ abstract class Query
     protected $limit = '';
 
     /**
+     * @var string
+     */
+    protected $option = '';
+
+    /**
      * @var bool
      */
     protected $allowOperator;
@@ -116,6 +121,12 @@ abstract class Query
      * @var int
      */
     protected $storageLimit;
+
+    /**
+     * @var array
+     */
+    protected $storageOption;
+
     /**
      * @var int
      */
@@ -716,6 +727,24 @@ abstract class Query
         $this->where         = '';
         $this->allowOperator = false;
         $this->buildIf2String([$where], $this->where);
+    }
+
+    /**
+     * @param string $key
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function sphinxOption($key = 'ranker', $value = 'matchany')
+    {
+        $this->storageOption = "$key = $value";
+
+        return $this;
+    }
+
+    protected function buildOption()
+    {
+        $this->option = $this->storageOption;
     }
 
     /**

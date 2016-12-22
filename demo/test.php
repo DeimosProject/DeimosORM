@@ -15,6 +15,6 @@ $builder->setConnection('sphinx');
 $event = $builder->queryEntity(Event::class)
     ->sphinxMatch('hello')
     ->limit(1000)
-    ->find();
+    ->sphinxOption();
 
-var_dump($event);
+var_dump((string)$event, $event->find());

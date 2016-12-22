@@ -23,7 +23,8 @@ class SelectQuery extends Query
         'groupBy' => 'GROUP BY',
         'having'  => 'HAVING',
         'orderBy' => 'ORDER BY',
-        'limit'   => 'LIMIT'
+        'limit'   => 'LIMIT',
+        'option'  => 'OPTION',
     ];
 
     /**
