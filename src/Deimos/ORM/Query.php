@@ -149,6 +149,10 @@ abstract class Query
 
     /**
      * ('id', 'name', [alias => value], ...)
+     *
+     * @param array ...$fields
+     *
+     * @return static
      */
     public function fields(...$fields)
     {
@@ -159,6 +163,10 @@ abstract class Query
 
     /**
      * ('id', 'name', [alias => value], ...)
+     *
+     * @param array ...$models
+     *
+     * @return static
      */
     public function model(...$models)
     {
@@ -637,6 +645,8 @@ abstract class Query
      * @param array ...$args
      *
      * @return string
+     *
+     * @throws \InvalidArgumentException
      */
     protected function buildWhereOne(...$args) // 2 or 3 [1,1],
     {
@@ -690,7 +700,7 @@ abstract class Query
             return $this->buildSQLExpression($value);
         }
 
-        if (is_null($value))
+        if ($value === null)
         {
             return 'NULL';
         }
@@ -733,7 +743,7 @@ abstract class Query
      * @param string $key
      * @param string $value
      *
-     * @return $this
+     * @return static
      */
     public function sphinxOption($key = 'ranker', $value = 'matchany')
     {
@@ -858,6 +868,8 @@ abstract class Query
 
     /**
      * build limit
+     * 
+     * @throws \InvalidArgumentException
      */
     protected function buildLimit()
     {
@@ -890,7 +902,7 @@ abstract class Query
     protected function statementExec($sql = null, array $parameters = [])
     {
         $statement = $this->statement($sql);
-        $statement->execute($parameters ? $parameters : $this->parameters());
+        $statement->execute($parameters ? : $this->parameters());
 
         return $statement;
     }

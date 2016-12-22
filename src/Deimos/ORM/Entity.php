@@ -2,7 +2,7 @@
 
 namespace Deimos\ORM;
 
-class Entity extends \stdClass
+class Entity implements \JsonSerializable
 {
 
     const STATE_CREATED = 0;
@@ -89,6 +89,14 @@ class Entity extends \stdClass
     }
 
     /**
+     * @return int
+     */
+    public function id()
+    {
+        return $this->{$this->primaryKey};
+    }
+
+    /**
      * @return bool
      */
     public function isLoaded()
@@ -165,7 +173,7 @@ class Entity extends \stdClass
         if ($this->isLoaded())
         {
             $update = $this->builder->updateEntity($this->tableName())
-                ->setData($this->storageModify)
+                ->setData($this->modifyAsArray())
                 ->where($primaryKey, $this->{$primaryKey})
                 ->updateOne();
 
@@ -176,7 +184,7 @@ class Entity extends \stdClass
 
         $id = $this->builder->create()
             ->model($this->tableName())
-            ->setData($this->storageModify)
+            ->setData($this->modifyAsArray())
             ->insert();
 
         if ($id)
@@ -205,8 +213,40 @@ class Entity extends \stdClass
 
     protected function modify2Origin()
     {
-        $this->storageOrigin = array_merge($this->storageOrigin, $this->storageModify);
+        $this->storageOrigin = $this->asArray();
         $this->storageModify = [];
+    }
+
+    /**
+     * @return array
+     */
+    public function asArray()
+    {
+        return array_merge($this->originAsArray(), $this->modifyAsArray());
+    }
+
+    /**
+     * @return array
+     */
+    public function originAsArray()
+    {
+        return $this->storageOrigin;
+    }
+
+    /**
+     * @return array
+     */
+    public function modifyAsArray()
+    {
+        return $this->storageOrigin;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->asArray();
     }
 
     /**
