@@ -60,7 +60,6 @@ class Connection extends \PDO
             static::ATTR_EMULATE_PREPARES         => true,
             static::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             static::ATTR_PERSISTENT               => false,
-            static::ATTR_ERRMODE                  => static::ERRMODE_EXCEPTION,
             static::MYSQL_ATTR_INIT_COMMAND       => 'SET NAMES utf8mb4'
         ];
 
