@@ -15,12 +15,6 @@ $builder->setConnection('sphinx');
 $event = $builder->queryEntity(Event::class)
     ->sphinxMatch('hello')
     ->limit(1000)
-    ->findOne();
-
-$event->title = 'I’m like “Hey, what’s up, hello!” ?';
-
-$builder->setConnection();
-
-$event->save();
+    ->find();
 
 var_dump($event);
