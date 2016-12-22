@@ -624,11 +624,13 @@ abstract class Query
     {
         $result = $this->buildKey($args[0]);
 
-        if (count($args) === 3)
+        $count = count($args);
+
+        if ($count === 3)
         {
             $result .= ' ' . $args[1] . ' ' . $this->buildValue($args[2]);
         }
-        else
+        else if ($count === 2)
         {
             $value = $this->buildValue($args[1]);
 
@@ -644,6 +646,10 @@ abstract class Query
             {
                 $result .= ' = ' . $value;
             }
+        }
+        else if (!($args[0] instanceof SQLExpression))
+        {
+            throw new \InvalidArgumentException('Where');
         }
 
         return $result;
@@ -860,7 +866,7 @@ abstract class Query
         /**
          * @var $sqlQuery string
          */
-        $sqlQuery = $sql ? : (string)$this;
+        $sqlQuery = $sql ?: (string)$this;
 
         if (empty($statements[$sqlQuery]))
         {
