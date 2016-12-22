@@ -5,13 +5,13 @@ include_once __DIR__ . '/models.php';
 
 \Deimos\ORM\Connection::setConfig([
     'default' => [
-        'dsn'      => 'mysql:host=localhost;dbname=test',
+        'dsn'      => 'mysql:host=localhost;dbname=auto_dev',
         'username' => 'root',
         'password' => ''
     ],
     'sphinx'  => [
-        'dsn'      => 'mysql:host=localhost:9306;dbname=test',
-        'username' => 'root',
+        'dsn'      => 'mysql:host=localhost:9306',
+        'username' => '',
         'password' => ''
     ],
 ]);

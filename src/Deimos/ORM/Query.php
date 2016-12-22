@@ -312,18 +312,6 @@ abstract class Query
     }
 
     /**
-     * @param $sql
-     *
-     * @return static
-     */
-    public function match($sql)
-    {
-        $exression = $this->builder->sqlExression('MATCH(?)', [$sql]);
-
-        return $this->where($exression);
-    }
-
-    /**
      * ('id', 'name', ...)
      *
      * @param array ...$where
