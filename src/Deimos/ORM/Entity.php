@@ -130,7 +130,7 @@ class Entity implements \JsonSerializable
      *
      * @throws \InvalidArgumentException
      */
-    public function relation($model, $type)
+    protected function relation($model, $type)
     {
         return $this->builder->relation($this, $model, $type);
     }
@@ -238,7 +238,7 @@ class Entity implements \JsonSerializable
      */
     public function modifyAsArray()
     {
-        return $this->storageOrigin;
+        return $this->storageModify;
     }
 
     /**
@@ -255,6 +255,42 @@ class Entity implements \JsonSerializable
     public function __invoke($value)
     {
         $this->state = $value;
+    }
+
+    /**
+     * @param $model
+     *
+     * @return SelectQuery
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function manyToMany($model)
+    {
+        return $this->relation($model, Builder::MANY2MANY);
+    }
+
+    /**
+     * @param $model
+     *
+     * @return SelectQuery
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function oneToOne($model)
+    {
+        return $this->relation($model, Builder::ONE2ONE);
+    }
+
+    /**
+     * @param $model
+     *
+     * @return SelectQuery
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function oneToMany($model)
+    {
+        return $this->relation($model, Builder::ONE2MANY);
     }
 
     /**

@@ -30,4 +30,4 @@ var_dump($event = $eventQuery->findOne());
 
 $builder->setConnection();
 
-var_dump($event->relation(Brand::class, $builder::ONE2MANY)->findOne());
+var_dump($event->oneToMany(Brand::class)->findOne());
