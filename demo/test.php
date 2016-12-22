@@ -13,7 +13,7 @@ $builder->setConnection('sphinx');
 //var_dump($people);
 
 $events = $builder->queryEntity(Event::class)
-    ->where($builder->sqlExression('MATCH(? | ?)', ['a', 'b']))
+    ->match('@txt hello')
     ->limit(1000)
     ->find();
 
