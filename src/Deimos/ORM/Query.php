@@ -469,12 +469,7 @@ abstract class Query
      */
     public function setData(array $storage)
     {
-        $this->storageSet = [];
-
-        foreach ($storage as $column => $value)
-        {
-            $this->set($column, $value);
-        }
+        $this->storageSet = $storage;
 
         return $this;
     }
@@ -487,7 +482,7 @@ abstract class Query
      */
     public function set($column, $value)
     {
-        $this->storageSet[] = $this->buildKey($column) . ' = ' . $this->buildValue($value);
+        $this->storageSet[$column] = $value;
 
         return $this;
     }
@@ -822,7 +817,14 @@ abstract class Query
      */
     protected function buildSet()
     {
-        $this->set = implode(', ', $this->storageSet);
+        $storage = [];
+
+        foreach ($this->storageSet as $column => $value)
+        {
+            $storage[] = $this->buildKey($column) . ' = ' . $this->buildValue($value);
+        }
+
+        $this->set = implode(', ', $storage);
     }
 
     /**

@@ -165,8 +165,8 @@ class Entity extends \stdClass
         if ($this->isLoaded())
         {
             $update = $this->builder->updateEntity($this->tableName())
-                ->where($primaryKey, $this->{$primaryKey})
                 ->setData($this->storageModify)
+                ->where($primaryKey, $this->{$primaryKey})
                 ->updateOne();
 
             $this->modify2Origin();

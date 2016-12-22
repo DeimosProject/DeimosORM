@@ -30,7 +30,7 @@ class DeleteQuery extends Query
     public function delete()
     {
         $statement = $this->statement();
-        $statement->execute($this->parameters);
+        $statement->execute($this->parameters());
 
         return $statement->rowCount();
     }

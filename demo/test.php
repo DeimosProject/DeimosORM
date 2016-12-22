@@ -12,9 +12,15 @@ $builder->setConnection('sphinx');
 //
 //var_dump($people);
 
-$events = $builder->queryEntity(Event::class)
+$event = $builder->queryEntity(Event::class)
     ->sphinxMatch('hello')
     ->limit(1000)
-    ->find();
+    ->findOne();
 
-var_dump($events);
+$event->title = 'I’m like “Hey, what’s up, hello!” ?';
+
+$builder->setConnection();
+
+$event->save();
+
+var_dump($event);
