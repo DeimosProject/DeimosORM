@@ -16,7 +16,8 @@ class Config
 
     public static function setStorage(array $storage)
     {
-        static::$storage = $storage;
+        static::$modelConfig = null;
+        static::$storage     = $storage;
     }
 
     public static function get(Entity $entity)
