@@ -15,6 +15,11 @@ class Builder
     protected $connection;
 
     /**
+     * @var Transaction
+     */
+    protected $transaction;
+
+    /**
      * @var array
      */
     protected $options = [
@@ -56,14 +61,35 @@ class Builder
     }
 
     /**
+     * @return Transaction
+     */
+    public function transaction()
+    {
+        if (!$this->transaction)
+        {
+            $this->transaction = new Transaction($this);
+        }
+
+        return $this->transaction;
+    }
+
+    /**
      * @param       $sql
      * @param array $parameters
      *
      * @return \PDOStatement
+     *
+     * @throws \InvalidArgumentException
      */
     public function rawQuery($sql, array $parameters = [])
     {
-        return $this->query()->raw($sql, $parameters);
+        return $this->transaction()->call(function ($builder) use ($sql, $parameters)
+        {
+            /**
+             * @var $builder Builder
+             */
+            return $builder->query()->raw($sql, $parameters);
+        });
     }
 
     /**
