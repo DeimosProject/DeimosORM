@@ -121,7 +121,10 @@ class SelectQuery extends Query
      */
     public function raw($sql, array $parameters = [])
     {
-        return $this->statementExec($sql, $parameters);
+        $statement = $this->statementExec($sql, $parameters);
+        $statement->closeCursor();
+
+        return $statement;
     }
 
 }

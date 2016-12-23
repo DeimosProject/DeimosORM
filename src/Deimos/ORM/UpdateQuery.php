@@ -31,8 +31,7 @@ class UpdateQuery extends Query
      */
     public function update()
     {
-        $statement = $this->statement();
-        $statement->execute($this->parameters());
+        $statement = $this->statementExec();
 
         return $statement->rowCount();
     }

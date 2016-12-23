@@ -18,8 +18,7 @@ class InsertQuery extends Query
      */
     public function insert()
     {
-        $statement = $this->statement();
-        $statement->execute($this->parameters());
+        $this->statementExec();
 
         return $this->builder->connection()->lastInsertId();
     }

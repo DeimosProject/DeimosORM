@@ -29,8 +29,7 @@ class DeleteQuery extends Query
      */
     public function delete()
     {
-        $statement = $this->statement();
-        $statement->execute($this->parameters());
+        $statement = $this->statementExec();
 
         return $statement->rowCount();
     }
