@@ -1,0 +1,23 @@
+<phpunit bootstrap="tests/bootstrap.php">
+
+    <testsuites>
+        <testsuite name="Query">
+            <directory>tests/Test/Query</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist
+                addUncoveredFilesFromWhitelist="true"
+                processUncoveredFilesFromWhitelist="true">
+
+            <directory suffix=".php">./src/ORM/</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target="./build/html/"/>
+        <log type="coverage-clover" target="./build/logs/clover.xml"/>
+    </logging>
+
+</phpunit>
