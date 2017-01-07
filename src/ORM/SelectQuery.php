@@ -36,7 +36,7 @@ class SelectQuery extends Query
 
         $this->storageFields = [];
 
-        $sqlExpression = $this->builder->sqlExression('COUNT(1) as `count`');
+        $sqlExpression = $this->builder->sqlExpression('COUNT(1) as `count`');
 
         $this->fields($sqlExpression);
 

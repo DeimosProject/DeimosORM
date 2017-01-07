@@ -2,6 +2,7 @@
 
 namespace Deimos\ORM;
 
+use Deimos\ORM\Сonstant\Relation;
 use Doctrine\Common\Inflector\Inflector;
 
 class Config
@@ -42,7 +43,7 @@ class Config
 
             $type = static::getProxyRequired($value, 'type');
 
-            if (in_array($type, [Builder::MANY2MANY, Builder::ONE2ONE], true))
+            if (in_array($type, [Relation::MANY2MANY, Relation::ONE2ONE], true))
             {
                 static::initGMany($value, $type);
             }
@@ -78,14 +79,14 @@ class Config
         $defaultTable = $left . ucfirst($right);
         $tableName    = static::getProxy($value, 'tableName', $defaultTable);
 
-        $singularizeRight = Inflector::singularize($right);
-        $singularizeLeft  = Inflector::singularize($left);
+        $singularRight = Inflector::singularize($right);
+        $singularLeft  = Inflector::singularize($left);
 
-        $rightKey = static::getProxy($value, 'rightKey', $singularizeRight . ucfirst($rightPK));
-        $leftKey  = static::getProxy($value, 'leftKey', $singularizeLeft . ucfirst($leftPK));
+        $rightKey = static::getProxy($value, 'rightKey', $singularRight . ucfirst($rightPK));
+        $leftKey  = static::getProxy($value, 'leftKey', $singularLeft . ucfirst($leftPK));
 
         static::$modelConfig[$right][$type][$left] = [
-            'model'      => $singularizeLeft,
+            'model'      => $singularLeft,
             'tableName'  => $tableName,
             'currentPK'  => $leftPK,
             'currentKey' => $leftKey,
@@ -94,7 +95,7 @@ class Config
         ];
 
         static::$modelConfig[$left][$type][$right] = [
-            'model'      => $singularizeRight,
+            'model'      => $singularRight,
             'tableName'  => $tableName,
             'currentPK'  => $rightPK,
             'currentKey' => $rightKey,
@@ -128,9 +129,9 @@ class Config
         $ownerPK = Reflection::getPrimaryKey($ownerObject);
         $itemsPK = Reflection::getPrimaryKey($itemsObject);
 
-        $singularizeOwner = Inflector::singularize($owner);
+        $singularOwner = Inflector::singularize($owner);
 
-        $itemsKey = static::getProxy($value, 'itemsKey', $singularizeOwner . ucfirst($ownerPK));
+        $itemsKey = static::getProxy($value, 'itemsKey', $singularOwner . ucfirst($ownerPK));
 
         static::$modelConfig[$owner][$type][$items] = [
             'tableName'  => $items,

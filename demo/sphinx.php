@@ -8,7 +8,7 @@ $builder->setConnection('sphinx');
 
 \Deimos\ORM\Config::setStorage([
     [
-        'type'     => $builder::ONE2MANY,
+        'type'     => \Deimos\ORM\Сonstant\Relation::ONE2MANY,
         'owner'    => Brand::class,
         'items'    => Event::class,
         'itemsKey' => 'brand_id'

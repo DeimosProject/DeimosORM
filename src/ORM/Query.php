@@ -337,7 +337,7 @@ abstract class Query
      */
     public function sphinxMatch($sql)
     {
-        $exression = $this->builder->sqlExression('MATCH(?)', [$sql]);
+        $exression = $this->builder->sqlExpression('MATCH(?)', [$sql]);
 
         return $this->where($exression);
     }
@@ -868,7 +868,7 @@ abstract class Query
 
     /**
      * build limit
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     protected function buildLimit()
@@ -902,7 +902,7 @@ abstract class Query
     protected function statementExec($sql = null, array $parameters = [])
     {
         $statement = $this->statement($sql);
-        $statement->execute($parameters ? : $this->parameters());
+        $statement->execute($parameters ?: $this->parameters());
 
         return $statement;
     }
