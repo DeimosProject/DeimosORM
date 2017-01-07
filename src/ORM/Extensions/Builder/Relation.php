@@ -29,12 +29,11 @@ trait Relation
      */
     public function relation(Entity $entity, $model, $type)
     {
-        $table = Reflection::getTableName($model);
+        $table      = Reflection::getTableName($model);
+        $this->type = $type;
 
         if ($type === RelationConstant::MANY2MANY)
         {
-            $this->type = RelationConstant::MANY2MANY;
-
             return $this->relationMany2Many($entity, $table, $model);
         }
 
@@ -110,8 +109,6 @@ trait Relation
      */
     protected function relationOne2One(Entity $entity, $model, $originModel)
     {
-        $this->type = RelationConstant::ONE2ONE;
-
         return $this
             ->relationMany2Many($entity, $model, $originModel)
             ->limit(1);
