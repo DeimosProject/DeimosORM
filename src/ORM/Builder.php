@@ -15,7 +15,6 @@ class Builder
     use Update;
     use Delete;
 
-
     /**
      * @var Connection
      */

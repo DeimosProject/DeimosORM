@@ -1,8 +1,8 @@
 <?php
 
-namespace Test\Query\BuildTest;
+namespace Test\Query;
 
-class Test extends \PHPUnit_Framework_TestCase
+class BuildTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testEntity()
