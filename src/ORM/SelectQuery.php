@@ -50,11 +50,11 @@ class SelectQuery extends Query
     }
 
     /**
-     * @param bool $asArray
+     * @param bool $asObject
      *
      * @return Entity|array
      */
-    public function findOne($asArray = false)
+    public function findOne($asObject = true)
     {
         $limit = $this->storageLimit;
 
@@ -66,51 +66,51 @@ class SelectQuery extends Query
         $model = $this->getCurrentClass();
         $table = $this->getTableName();
 
-        if ($asArray)
+        if ($asObject)
         {
-            return $statement->fetch(Connection::FETCH_ASSOC);
+            $object = $statement->fetchObject($model, [
+                'builder'   => $this->builder,
+                'state'     => Entity::STATE_QUERY,
+                'tableName' => $table
+            ]);
+
+            $object(Entity::STATE_LOADED);
+
+            return $object;
         }
 
-        $object = $statement->fetchObject($model, [
-            'builder'   => $this->builder,
-            'state'     => Entity::STATE_QUERY,
-            'tableName' => $table
-        ]);
-
-        $object(Entity::STATE_LOADED);
-
-        return $object;
+        return $statement->fetch(Connection::FETCH_ASSOC);
     }
 
     /**
-     * @param bool $asArray
+     * @param bool $asObject
      *
      * @return array
      */
-    public function find($asArray = false)
+    public function find($asObject = true)
     {
         $statement = $this->statementExec();
 
         $model = $this->getCurrentClass();
         $table = $this->getTableName();
 
-        if ($asArray)
+        if ($asObject)
         {
-            return $statement->fetchAll(Connection::FETCH_ASSOC);
+            $objects = $statement->fetchAll(Connection::FETCH_CLASS, $model, [
+                'builder'   => $this->builder,
+                'state'     => Entity::STATE_QUERY,
+                'tableName' => $table
+            ]);
+
+            foreach ($objects as $object)
+            {
+                $object(Entity::STATE_LOADED);
+            }
+
+            return $objects;
         }
 
-        $objects = $statement->fetchAll(Connection::FETCH_CLASS, $model, [
-            'builder'   => $this->builder,
-            'state'     => Entity::STATE_QUERY,
-            'tableName' => $table
-        ]);
-
-        foreach ($objects as $object)
-        {
-            $object(Entity::STATE_LOADED);
-        }
-
-        return $objects;
+        return $statement->fetchAll(Connection::FETCH_ASSOC);
     }
 
     /**
