@@ -174,6 +174,8 @@ class Config
     /**
      * @param $value
      * @param $type
+     *
+     * @throws \InvalidArgumentException
      */
     protected function initOneToMany($value, $type)
     {

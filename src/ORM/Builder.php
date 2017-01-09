@@ -42,19 +42,6 @@ class Builder
     }
 
     /**
-     * @return Reflection
-     */
-    public function reflection()
-    {
-        if (!$this->reflection)
-        {
-            $this->reflection = new Reflection();
-        }
-
-        return $this->reflection;
-    }
-
-    /**
      * @return Config
      */
     public function config()
@@ -65,6 +52,19 @@ class Builder
         }
 
         return $this->config;
+    }
+
+    /**
+     * @return Reflection
+     */
+    public function reflection()
+    {
+        if (!$this->reflection)
+        {
+            $this->reflection = new Reflection();
+        }
+
+        return $this->reflection;
     }
 
     /**

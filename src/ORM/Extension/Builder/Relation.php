@@ -3,10 +3,10 @@
 namespace Deimos\ORM\Extension\Builder;
 
 use Deimos\ORM\Config;
+use Deimos\ORM\Constant\Relation as RelationConstant;
 use Deimos\ORM\Entity;
 use Deimos\ORM\Reflection;
 use Deimos\ORM\SelectQuery;
-use Deimos\ORM\Constant\Relation as RelationConstant;
 
 /**
  * Class Relation

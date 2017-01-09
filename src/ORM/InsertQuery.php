@@ -2,8 +2,12 @@
 
 namespace Deimos\ORM;
 
+use Deimos\ORM\Extension\Query\Set;
+
 class InsertQuery extends Query
 {
+
+    use Set;
 
     /**
      * @var array

@@ -91,11 +91,13 @@ class Entity implements \JsonSerializable
     }
 
     /**
-     * @return int
+     * @param $name
+     *
+     * @return mixed
      */
-    public function id()
+    public function getOrigin($name)
     {
-        return $this->{$this->primaryKey};
+        return $this->storageOrigin[$name];
     }
 
     /**
@@ -115,26 +117,11 @@ class Entity implements \JsonSerializable
     }
 
     /**
-     * @param $name
-     *
-     * @return mixed
+     * @return int
      */
-    public function getOrigin($name)
+    public function id()
     {
-        return $this->storageOrigin[$name];
-    }
-
-    /**
-     * @param string $model
-     * @param string $type
-     *
-     * @return SelectQuery
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function relation($model, $type)
-    {
-        return $this->builder->relation($this, $model, $type);
+        return $this->{$this->primaryKey};
     }
 
     /**
@@ -213,6 +200,14 @@ class Entity implements \JsonSerializable
         return $this->builder->reflection()->getTableName(static::class);
     }
 
+    /**
+     * @return array
+     */
+    public function modifyAsArray()
+    {
+        return $this->storageModify;
+    }
+
     protected function modify2Origin()
     {
         $this->storageOrigin = $this->asArray();
@@ -233,14 +228,6 @@ class Entity implements \JsonSerializable
     public function originAsArray()
     {
         return $this->storageOrigin;
-    }
-
-    /**
-     * @return array
-     */
-    public function modifyAsArray()
-    {
-        return $this->storageModify;
     }
 
     /**
@@ -269,6 +256,19 @@ class Entity implements \JsonSerializable
     public function manyToMany($model)
     {
         return $this->relation($model, Relation::MANY2MANY);
+    }
+
+    /**
+     * @param string $model
+     * @param string $type
+     *
+     * @return SelectQuery
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function relation($model, $type)
+    {
+        return $this->builder->relation($this, $model, $type);
     }
 
     /**

@@ -2,8 +2,14 @@
 
 namespace Deimos\ORM;
 
+use Deimos\ORM\Extension\Query\Limit;
+use Deimos\ORM\Extension\Query\Where;
+
 class DeleteQuery extends Query
 {
+
+    use Where;
+    use Limit;
 
     /**
      * @var array
@@ -19,9 +25,10 @@ class DeleteQuery extends Query
      */
     public function deleteOne()
     {
-        $this->limit(1);
+        $object = clone $this;
+        $object->limit(1);
 
-        return !!$this->delete();
+        return !!$object->delete();
     }
 
     /**

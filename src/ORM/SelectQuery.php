@@ -2,8 +2,28 @@
 
 namespace Deimos\ORM;
 
+use Deimos\ORM\Extension\Query\Field;
+use Deimos\ORM\Extension\Query\GroupBy;
+use Deimos\ORM\Extension\Query\Having;
+use Deimos\ORM\Extension\Query\Join;
+use Deimos\ORM\Extension\Query\Limit;
+use Deimos\ORM\Extension\Query\Offset;
+use Deimos\ORM\Extension\Query\Option;
+use Deimos\ORM\Extension\Query\OrderBy;
+use Deimos\ORM\Extension\Query\Where;
+
 class SelectQuery extends Query
 {
+
+    use Field;
+    use Join;
+    use Where;
+    use GroupBy;
+    use Having;
+    use OrderBy;
+    use Limit;
+    use Offset;
+    use Option;
 
     /**
      * @var array

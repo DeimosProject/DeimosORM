@@ -21,16 +21,6 @@ trait Query
     ];
 
     /**
-     * @return SelectQuery
-     */
-    public function query()
-    {
-        $query = $this->options['query'];
-
-        return new $query($this);
-    }
-
-    /**
      * @param $class
      *
      * @return SelectQuery
@@ -38,6 +28,16 @@ trait Query
     public function queryEntity($class)
     {
         return $this->query()->model($class);
+    }
+
+    /**
+     * @return SelectQuery
+     */
+    public function query()
+    {
+        $query = $this->options['query'];
+
+        return new $query($this);
     }
 
 }

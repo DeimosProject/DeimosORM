@@ -2,8 +2,18 @@
 
 namespace Deimos\ORM;
 
+use Deimos\ORM\Extension\Query\Limit;
+use Deimos\ORM\Extension\Query\OrderBy;
+use Deimos\ORM\Extension\Query\Set;
+use Deimos\ORM\Extension\Query\Where;
+
 class UpdateQuery extends Query
 {
+
+    use Set;
+    use Where;
+    use OrderBy;
+    use Limit;
 
     /**
      * @var array
@@ -21,9 +31,10 @@ class UpdateQuery extends Query
      */
     public function updateOne()
     {
-        $this->limit(1);
+        $object = clone $this;
+        $object->limit(1);
 
-        return !!$this->update();
+        return !!$object->update();
     }
 
     /**
@@ -31,9 +42,7 @@ class UpdateQuery extends Query
      */
     public function update()
     {
-        $statement = $this->statementExec();
-
-        return $statement->rowCount();
+        return $this->statementExec()->rowCount();
     }
 
 }
