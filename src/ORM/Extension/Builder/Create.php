@@ -10,6 +10,10 @@ trait Create
 {
 
     /**
+     * @var Reflection $reflection
+     */
+
+    /**
      * @return InsertQuery
      */
     public function create()
@@ -26,7 +30,11 @@ trait Create
      */
     public function createEntity($class)
     {
-        $tableName = Reflection::getTableName($class); // todo
+        /**
+         * @var Reflection $ref
+         */
+        $ref       = $this->reflection;
+        $tableName = $ref->getTableName($class);
 
         return new $class($this, Entity::STATE_CREATED, $tableName);
     }

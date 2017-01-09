@@ -6,8 +6,15 @@ use Deimos\ORM\Config;
 use Deimos\ORM\Entity;
 use Deimos\ORM\Reflection;
 use Deimos\ORM\SelectQuery;
-use Deimos\ORM\Сonstant\Relation as RelationConstant;
+use Deimos\ORM\Constant\Relation as RelationConstant;
 
+/**
+ * Class Relation
+ *
+ * @package Deimos\ORM\Extension\Builder
+ * @method Reflection reflection()
+ * @method Config config()
+ */
 trait Relation
 {
 
@@ -17,6 +24,16 @@ trait Relation
      * @var int
      */
     protected $type;
+
+    /**
+     * @var Reflection
+     */
+    protected $reflection;
+
+    /**
+     * @var Config
+     */
+    protected $config;
 
     /**
      * @param Entity $entity
@@ -29,7 +46,7 @@ trait Relation
      */
     public function relation(Entity $entity, $model, $type)
     {
-        $table      = Reflection::getTableName($model);
+        $table      = $this->reflection()->getTableName($model);
         $this->type = $type;
 
         if ($type === RelationConstant::MANY2MANY)
@@ -56,7 +73,7 @@ trait Relation
      */
     protected function relationMany2Many(Entity $entity, $model, $originModel)
     {
-        $configModel = Config::get($entity);
+        $configModel = $this->config()->get($entity);
         $type        = $this->type;
 
         if (empty($configModel[$type][$model]))
@@ -85,7 +102,7 @@ trait Relation
      */
     protected function relationOne2Many(Entity $entity, $model, $originModel)
     {
-        $configModel = Config::get($entity);
+        $configModel = $this->config()->get($entity);
 
         if (empty($configModel[RelationConstant::ONE2MANY][$model]))
         {

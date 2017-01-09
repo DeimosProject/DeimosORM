@@ -3,8 +3,14 @@
 namespace Deimos\ORM\Extension\Builder;
 
 use Deimos\ORM\Builder;
+use Deimos\ORM\Reflection;
 use Deimos\ORM\SQLExpression;
 
+/**
+ * Class RawQuery
+ *
+ * @package Deimos\ORM\Extension\Builder
+ */
 trait RawQuery
 {
 

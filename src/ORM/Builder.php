@@ -33,9 +33,38 @@ class Builder
         }
     }
 
+    /**
+     * @param string $name
+     */
     public function setConnection($name = 'default')
     {
         $this->connection = Connection::get($name);
+    }
+
+    /**
+     * @return Reflection
+     */
+    public function reflection()
+    {
+        if (!$this->reflection)
+        {
+            $this->reflection = new Reflection();
+        }
+
+        return $this->reflection;
+    }
+
+    /**
+     * @return Config
+     */
+    public function config()
+    {
+        if (!$this->config)
+        {
+            $this->config = new Config($this->reflection());
+        }
+
+        return $this->config;
     }
 
     /**

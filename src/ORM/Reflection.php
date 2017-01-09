@@ -10,52 +10,52 @@ class Reflection
     /**
      * @var \ReflectionClass[]
      */
-    protected static $refClass = [];
+    protected $refClass = [];
 
     /**
      * @var \ReflectionProperty
      */
-    protected static $refProperties = [];
+    protected $refProperties = [];
 
     /**
      * @var array
      */
-    protected static $tableList = [];
+    protected $tableList = [];
 
     /**
      * @var array
      */
-    protected static $pkList = [];
+    protected $pkList = [];
 
     /**
      * @param string $class
      *
      * @return string
      */
-    public static function getTableName($class)
+    public function getTableName($class)
     {
-        if (!isset(static::$tableList[$class]))
+        if (!isset($this->tableList[$class]))
         {
             if (!class_exists($class))
             {
                 return $class;
             }
 
-            $refProperty = static::getProperty($class, 'tableName');
+            $refProperty = $this->getProperty($class, 'tableName');
 
-            static::$tableList[$class] = $refProperty->getValue(new $class(null));
+            $this->tableList[$class] = $refProperty->getValue(new $class(null));
 
-            if (!static::$tableList[$class])
+            if (!$this->tableList[$class])
             {
-                $refClass  = static::reflectionClass($class);
+                $refClass  = $this->reflectionClass($class);
                 $class     = $refClass->getShortName();
                 $modelName = lcfirst($class);
 
-                static::$tableList[$class] = Inflector::pluralize($modelName);
+                $this->tableList[$class] = Inflector::pluralize($modelName);
             }
         }
 
-        return static::$tableList[$class];
+        return $this->tableList[$class];
     }
 
     /**
@@ -64,20 +64,20 @@ class Reflection
      *
      * @return \ReflectionProperty
      */
-    protected static function getProperty($class, $name)
+    protected function getProperty($class, $name)
     {
-        if (!isset(static::$refProperties[$name]))
+        if (!isset($this->refProperties[$name]))
         {
-            $refClass = static::reflectionClass($class);
+            $refClass = $this->reflectionClass($class);
 
             /**
              * @var $object \ReflectionProperty
              */
-            static::$refProperties[$name] = $object = $refClass->getProperty($name);
+            $this->refProperties[$name] = $object = $refClass->getProperty($name);
             $object->setAccessible(true);
         }
 
-        return static::$refProperties[$name];
+        return $this->refProperties[$name];
     }
 
     /**
@@ -85,14 +85,14 @@ class Reflection
      *
      * @return \ReflectionClass
      */
-    protected static function reflectionClass($class)
+    protected function reflectionClass($class)
     {
-        if (!isset(static::$refClass[$class]))
+        if (!isset($this->refClass[$class]))
         {
-            static::$refClass[$class] = new \ReflectionClass($class);
+            $this->refClass[$class] = new \ReflectionClass($class);
         }
 
-        return static::$refClass[$class];
+        return $this->refClass[$class];
     }
 
     /**
@@ -100,32 +100,32 @@ class Reflection
      *
      * @return string
      */
-    public static function getPrimaryKey($class)
+    public function getPrimaryKey($class)
     {
-        if (!isset(static::$pkList[$class]))
+        if (!isset($this->pkList[$class]))
         {
             if (!class_exists($class))
             {
                 return 'id';
             }
 
-            $refProperty = static::getProperty($class, 'primaryKey');
+            $refProperty = $this->getProperty($class, 'primaryKey');
 
-            static::$pkList[$class] = $refProperty->getValue(new $class(null));
+            $this->pkList[$class] = $refProperty->getValue(new $class(null));
         }
 
-        return static::$pkList[$class];
+        return $this->pkList[$class];
     }
 
     /**
      * @param Entity $object
      * @param string $tableName
      */
-    public static function setTableName(Entity $object, $tableName)
+    public function setTableName(Entity $object, $tableName)
     {
         $className = get_class($object);
 
-        $refObject = static::getProperty($className, 'tableName');
+        $refObject = $this->getProperty($className, 'tableName');
 
         $refObject->setValue($object, $tableName);
     }
@@ -134,11 +134,11 @@ class Reflection
      * @param Entity $object
      * @param int    $state
      */
-    public static function setState(Entity $object, $state)
+    public function setState(Entity $object, $state)
     {
         $className = get_class($object);
 
-        $refObject = static::getProperty($className, 'state');
+        $refObject = $this->getProperty($className, 'state');
 
         $refObject->setValue($object, $state);
     }

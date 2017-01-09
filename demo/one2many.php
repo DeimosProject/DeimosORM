@@ -4,8 +4,6 @@ include_once __DIR__ . '/../bootstrap.php';
 
 $builder = new \Deimos\ORM\Builder();
 
-$builder->setConnection('sphinx');
-
 $builder->config()->setStorage([
     [
         'type'     => \Deimos\ORM\Constant\Relation::ONE2MANY,
@@ -22,12 +20,8 @@ $builder->config()->setStorage([
 //var_dump($people);
 
 $eventQuery = $builder->queryEntity(Event::class)
-    ->sphinxMatch('hello')
-    ->limit(1000)
-    ->sphinxOption();
+    ->where('txt', 'like', '%hello%')
+    ->limit(1000);
 
 var_dump($event = $eventQuery->findOne());
-
-$builder->setConnection();
-
 var_dump($event->oneToMany(Brand::class)->findOne());

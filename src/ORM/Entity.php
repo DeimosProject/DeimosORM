@@ -2,6 +2,8 @@
 
 namespace Deimos\ORM;
 
+use Deimos\ORM\Constant\Relation;
+
 class Entity implements \JsonSerializable
 {
 
@@ -208,7 +210,7 @@ class Entity implements \JsonSerializable
             return $this->tableName;
         }
 
-        return Reflection::getTableName(static::class);
+        return $this->builder->reflection()->getTableName(static::class);
     }
 
     protected function modify2Origin()
@@ -266,7 +268,7 @@ class Entity implements \JsonSerializable
      */
     public function manyToMany($model)
     {
-        return $this->relation($model, Builder::MANY2MANY);
+        return $this->relation($model, Relation::MANY2MANY);
     }
 
     /**
@@ -278,7 +280,7 @@ class Entity implements \JsonSerializable
      */
     public function oneToOne($model)
     {
-        return $this->relation($model, Builder::ONE2ONE);
+        return $this->relation($model, Relation::ONE2ONE);
     }
 
     /**
@@ -290,7 +292,7 @@ class Entity implements \JsonSerializable
      */
     public function oneToMany($model)
     {
-        return $this->relation($model, Builder::ONE2MANY);
+        return $this->relation($model, Relation::ONE2MANY);
     }
 
     /**

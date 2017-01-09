@@ -2,7 +2,7 @@
 
 namespace Deimos\ORM;
 
-use Deimos\ORM\Сonstant\Relation;
+use Deimos\ORM\Constant\Relation;
 use Doctrine\Common\Inflector\Inflector;
 
 class Config
@@ -11,51 +11,91 @@ class Config
     /**
      * @var array
      */
-    protected static $storage;
+    protected $storage;
 
-    protected static $modelConfig;
+    /**
+     * @var array
+     */
+    protected $modelConfig;
 
-    public static function setStorage(array $storage)
+    /**
+     * @var Reflection
+     */
+    protected $reflection;
+
+    /**
+     * Config constructor.
+     *
+     * @param Reflection $reflection
+     */
+    public function __construct(Reflection $reflection)
     {
-        static::$modelConfig = null;
-        static::$storage     = $storage;
+        $this->reflection = $reflection;
     }
 
-    public static function get(Entity $entity)
+    /**
+     * @param array $storage
+     */
+    public function setStorage(array $storage)
     {
-        if (!static::$modelConfig)
+        $this->modelConfig = null;
+        $this->storage     = $storage;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return array|mixed
+     * @throws \InvalidArgumentException
+     */
+    public function get(Entity $entity)
+    {
+        if (!$this->modelConfig)
         {
-            static::init();
+            $this->init();
         }
-//        var_dump(static::$modelConfig);
+
         $entityClass = get_class($entity);
 
-        $key = Reflection::getTableName($entityClass);
+        $key = $this->reflection->getTableName($entityClass);
 
-        return isset(static::$modelConfig[$key]) ?
-            static::$modelConfig[$key] : [];
+        return isset($this->modelConfig[$key]) ?
+            $this->modelConfig[$key] : [];
     }
 
-    protected static function init()
+    /**
+     * init config
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function init()
     {
-        foreach (static::$storage as $value)
+        foreach ($this->storage as $value)
         {
 
-            $type = static::getProxyRequired($value, 'type');
+            $type = $this->getProxyRequired($value, 'type');
 
             if (in_array($type, [Relation::MANY2MANY, Relation::ONE2ONE], true))
             {
-                static::initGMany($value, $type);
+                $this->initGMany($value, $type);
             }
             else
             {
-                static::initOneToMany($value, $type);
+                $this->initOneToMany($value, $type);
             }
 
         }
     }
 
-    protected static function getProxyRequired($value, $key)
+    /**
+     * @param $value
+     * @param $key
+     *
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function getProxyRequired($value, $key)
     {
         if (array_key_exists($key, $value))
         {
@@ -65,27 +105,33 @@ class Config
         throw new \InvalidArgumentException("Required key '{$key}' not found");
     }
 
-    protected static function initGMany($value, $type)
+    /**
+     * @param $value
+     * @param $type
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function initGMany($value, $type)
     {
-        $rightObject = static::getProxyRequired($value, 'right');
-        $leftObject  = static::getProxyRequired($value, 'left');
+        $rightObject = $this->getProxyRequired($value, 'right');
+        $leftObject  = $this->getProxyRequired($value, 'left');
 
-        $right = Reflection::getTableName($rightObject);
-        $left  = Reflection::getTableName($leftObject);
+        $right = $this->reflection->getTableName($rightObject);
+        $left  = $this->reflection->getTableName($leftObject);
 
-        $rightPK = Reflection::getPrimaryKey($rightObject);
-        $leftPK  = Reflection::getPrimaryKey($leftObject);
+        $rightPK = $this->reflection->getPrimaryKey($rightObject);
+        $leftPK  = $this->reflection->getPrimaryKey($leftObject);
 
         $defaultTable = $left . ucfirst($right);
-        $tableName    = static::getProxy($value, 'tableName', $defaultTable);
+        $tableName    = $this->getProxy($value, 'tableName', $defaultTable);
 
         $singularRight = Inflector::singularize($right);
         $singularLeft  = Inflector::singularize($left);
 
-        $rightKey = static::getProxy($value, 'rightKey', $singularRight . ucfirst($rightPK));
-        $leftKey  = static::getProxy($value, 'leftKey', $singularLeft . ucfirst($leftPK));
+        $rightKey = $this->getProxy($value, 'rightKey', $singularRight . ucfirst($rightPK));
+        $leftKey  = $this->getProxy($value, 'leftKey', $singularLeft . ucfirst($leftPK));
 
-        static::$modelConfig[$right][$type][$left] = [
+        $this->modelConfig[$right][$type][$left] = [
             'model'      => $singularLeft,
             'tableName'  => $tableName,
             'currentPK'  => $leftPK,
@@ -94,7 +140,7 @@ class Config
             'selfKey'    => $rightKey
         ];
 
-        static::$modelConfig[$left][$type][$right] = [
+        $this->modelConfig[$left][$type][$right] = [
             'model'      => $singularRight,
             'tableName'  => $tableName,
             'currentPK'  => $rightPK,
@@ -104,11 +150,18 @@ class Config
         ];
     }
 
-    protected static function getProxy($value, $key, $default = null)
+    /**
+     * @param      $value
+     * @param      $key
+     * @param null $default
+     *
+     * @return mixed|null
+     */
+    protected function getProxy($value, $key, $default = null)
     {
         try
         {
-            $data = static::getProxyRequired($value, $key);
+            $data = $this->getProxyRequired($value, $key);
         }
         catch (\Exception $exception)
         {
@@ -118,28 +171,32 @@ class Config
         return $data;
     }
 
-    protected static function initOneToMany($value, $type)
+    /**
+     * @param $value
+     * @param $type
+     */
+    protected function initOneToMany($value, $type)
     {
-        $ownerObject = static::getProxyRequired($value, 'owner');
-        $itemsObject = static::getProxyRequired($value, 'items');
+        $ownerObject = $this->getProxyRequired($value, 'owner');
+        $itemsObject = $this->getProxyRequired($value, 'items');
 
-        $owner = Reflection::getTableName($ownerObject);
-        $items = Reflection::getTableName($itemsObject);
+        $owner = $this->reflection->getTableName($ownerObject);
+        $items = $this->reflection->getTableName($itemsObject);
 
-        $ownerPK = Reflection::getPrimaryKey($ownerObject);
-        $itemsPK = Reflection::getPrimaryKey($itemsObject);
+        $ownerPK = $this->reflection->getPrimaryKey($ownerObject);
+        $itemsPK = $this->reflection->getPrimaryKey($itemsObject);
 
         $singularOwner = Inflector::singularize($owner);
 
-        $itemsKey = static::getProxy($value, 'itemsKey', $singularOwner . ucfirst($ownerPK));
+        $itemsKey = $this->getProxy($value, 'itemsKey', $singularOwner . ucfirst($ownerPK));
 
-        static::$modelConfig[$owner][$type][$items] = [
+        $this->modelConfig[$owner][$type][$items] = [
             'tableName'  => $items,
             'currentKey' => $itemsKey,
             'selfKey'    => $itemsPK,
         ];
 
-        static::$modelConfig[$items][$type][$owner] = [
+        $this->modelConfig[$items][$type][$owner] = [
             'tableName'  => $owner,
             'currentKey' => $itemsPK,
             'selfKey'    => $itemsKey,

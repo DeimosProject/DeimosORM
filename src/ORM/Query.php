@@ -230,7 +230,7 @@ abstract class Query
 
             if (class_exists($field))
             {
-                $field = Reflection::getTableName($field);
+                $field = $this->builder->reflection()->getTableName($field);
             }
 
             return $this->buildKey($field) . ' AS `' . $alias . '`';
@@ -238,7 +238,7 @@ abstract class Query
 
         if (class_exists($data))
         {
-            $data = Reflection::getTableName($data);
+            $data = $this->builder->reflection()->getTableName($data);
         }
 
         return $this->buildKey($data);
@@ -574,7 +574,7 @@ abstract class Query
             return $model;
         }
 
-        return Reflection::getTableName($model);
+        return $this->builder->reflection()->getTableName($model);
     }
 
     /**

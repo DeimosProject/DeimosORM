@@ -1,6 +1,6 @@
 <?php
 
-namespace Deimos\ORM\Сonstant;
+namespace Deimos\ORM\Constant;
 
 class Relation
 {

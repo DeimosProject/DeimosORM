@@ -21,7 +21,7 @@ class SQLExpression
      * @param string $sql
      * @param array  $parameters
      */
-    public function __construct($sql, $parameters = [])
+    public function __construct($sql, array $parameters = [])
     {
         $this->sql        = $sql;
         $this->parameters = $parameters;
