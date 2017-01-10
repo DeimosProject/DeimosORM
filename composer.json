@@ -1,6 +1,14 @@
 {
   "name": "deimos/orm",
+  "description": "Deimos ORM.",
+  "keywords": [
+    "deimos",
+    "orm",
+    "database"
+  ],
+  "homepage": "https://github.com/REZ1DENT3/DeimosORM",
   "license": "MIT",
+  "type": "library",
   "authors": [
     {
       "name": "rez1dent3",
@@ -8,7 +16,7 @@
     }
   ],
   "require": {
-    "php": "^5.5 || ^7.0",
+    "php": "^5.6 || ^7.0",
     "doctrine/inflector": "~1.0"
   },
   "require-dev": {
