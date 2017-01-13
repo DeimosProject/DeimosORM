@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Deimos\ORM\SelectQuery</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-Deimos.html">
+						Deimos<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-Deimos.ORM.html">
+						ORM<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Deimos.ORM.Constant.html">
+						Constant					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Deimos.ORM.Extension.html">
+						Extension<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Deimos.ORM.Extension.Builder.html">
+						Builder					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Deimos.ORM.Extension.Query.html">
+						Query					</a>
+
+						</li>
+							</ul></li></ul></li></ul></li>
+				<li>
+					<a href="namespace-PHP.html">
+						PHP					</a>
+
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Deimos.ORM.Builder.html">Builder</a></li>
+				<li><a href="class-Deimos.ORM.Config.html">Config</a></li>
+				<li><a href="class-Deimos.ORM.Connection.html">Connection</a></li>
+				<li><a href="class-Deimos.ORM.DeleteQuery.html">DeleteQuery</a></li>
+				<li><a href="class-Deimos.ORM.Entity.html">Entity</a></li>
+				<li><a href="class-Deimos.ORM.InsertQuery.html">InsertQuery</a></li>
+				<li><a href="class-Deimos.ORM.Query.html">Query</a></li>
+				<li><a href="class-Deimos.ORM.Reflection.html">Reflection</a></li>
+				<li class="active"><a href="class-Deimos.ORM.SelectQuery.html">SelectQuery</a></li>
+				<li><a href="class-Deimos.ORM.SQLExpression.html">SQLExpression</a></li>
+				<li><a href="class-Deimos.ORM.Transaction.html">Transaction</a></li>
+				<li><a href="class-Deimos.ORM.UpdateQuery.html">UpdateQuery</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Deimos.ORM.html" title="Summary of Deimos\ORM"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+				<li>
+					<a href="annotation-group-deprecated.html" title="List of elements with deprecated annotation">
+						<span>Deprecated</span>
+					</a>
+				</li>
+				<li>
+					<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+						<span>Todo</span>
+					</a>
+				</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class SelectQuery</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Deimos.ORM.Query.html"><span>Deimos\ORM\Query</span></a>
+			
+			
+			 uses 
+					<a href="class-Deimos.ORM.Extension.Query.BuildExt.html"><span>Deimos\ORM\Extension\Query\BuildExt</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.Model.html"><span>Deimos\ORM\Extension\Query\Model</span></a>
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Deimos\ORM\SelectQuery</span></b>			
+			
+			 uses 
+					<a href="class-Deimos.ORM.Extension.Query.Field.html"><span>Deimos\ORM\Extension\Query\Field</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.Join.html"><span>Deimos\ORM\Extension\Query\Join</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.Where.html"><span>Deimos\ORM\Extension\Query\Where</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.GroupBy.html"><span>Deimos\ORM\Extension\Query\GroupBy</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.Having.html"><span>Deimos\ORM\Extension\Query\Having</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.OrderBy.html"><span>Deimos\ORM\Extension\Query\OrderBy</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.Limit.html"><span>Deimos\ORM\Extension\Query\Limit</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.Offset.html"><span>Deimos\ORM\Extension\Query\Offset</span></a>, 
+			
+					<a href="class-Deimos.ORM.Extension.Query.Option.html"><span>Deimos\ORM\Extension\Query\Option</span></a>
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Deimos.html">Deimos</a>\<a href="namespace-Deimos.ORM.html">ORM</a><br>
+		
+
+			<b>Located at</b> <a href="source-class-Deimos.ORM.SelectQuery.html#15-150" title="Go to source code">ORM/SelectQuery.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="count" id="_count">
+
+		<td class="attributes"><code>
+			 public 
+
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_count">#</a>
+		<code><a href="source-class-Deimos.ORM.SelectQuery.html#50-70" title="Go to source code">count</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					integer
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findOne" id="_findOne">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-Deimos.ORM.Entity.html">Deimos\ORM\Entity</a></code>|array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findOne">#</a>
+		<code><a href="source-class-Deimos.ORM.SelectQuery.html#72-103" title="Go to source code">findOne</a>( <span>boolean <var>$asObject</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$asObject</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-Deimos.ORM.Entity.html">Deimos\ORM\Entity</a></code>|array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="find" id="_find">
+
+		<td class="attributes"><code>
+			 public 
+
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_find">#</a>
+		<code><a href="source-class-Deimos.ORM.SelectQuery.html#105-134" title="Go to source code">find</a>( <span>boolean <var>$asObject</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$asObject</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					array
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="raw" id="_raw">
+
+		<td class="attributes"><code>
+			 public 
+
+			<code><a href="class-PDOStatement.html">PDOStatement</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_raw">#</a>
+		<code><a href="source-class-Deimos.ORM.SelectQuery.html#136-148" title="Go to source code">raw</a>( <span>string <var>$sql</var></span>, <span>array <var>$parameters</var> = []</span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sql</var></dt>
+					<dd></dd>
+					<dt><var>$parameters</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-PDOStatement.html">PDOStatement</a></code>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Deimos.ORM.Query.html#methods">Deimos\ORM\Query</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Query.html#___construct">__construct()</a>, 
+			<a href="class-Deimos.ORM.Query.html#___toString">__toString()</a>, 
+			<a href="class-Deimos.ORM.Query.html#_gravis">gravis()</a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Field.html#methods">Deimos\ORM\Extension\Query\Field</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Field.html#_buildFields">buildFields()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Field.html#_fields">fields()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Join.html#methods">Deimos\ORM\Extension\Query\Join</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#_buildJoin">buildJoin()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#_join">join()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#_joinLeft">joinLeft()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#_joinRight">joinRight()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#_joinWithType">joinWithType()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#_setJoin">setJoin()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Where.html#methods">Deimos\ORM\Extension\Query\Where</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Where.html#_buildWhere">buildWhere()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Where.html#_sphinxMatch"><span class="deprecated">sphinxMatch()</span></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Where.html#_where">where()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Where.html#_whereOr">whereOr()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Where.html#_whereXor">whereXor()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.GroupBy.html#methods">Deimos\ORM\Extension\Query\GroupBy</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.GroupBy.html#_buildGroupBy">buildGroupBy()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.GroupBy.html#_groupBy">groupBy()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Having.html#methods">Deimos\ORM\Extension\Query\Having</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Having.html#_buildHaving">buildHaving()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Having.html#_having">having()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Having.html#_havingOr">havingOr()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Having.html#_havingXor">havingXor()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.OrderBy.html#methods">Deimos\ORM\Extension\Query\OrderBy</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.OrderBy.html#_buildOrderBy">buildOrderBy()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.OrderBy.html#_orderBy">orderBy()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Limit.html#methods">Deimos\ORM\Extension\Query\Limit</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Limit.html#_buildLimit">buildLimit()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Limit.html#_limit">limit()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Limit.html#_take">take()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Offset.html#methods">Deimos\ORM\Extension\Query\Offset</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Offset.html#_offset">offset()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Offset.html#_skip">skip()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Option.html#methods">Deimos\ORM\Extension\Query\Option</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Option.html#_buildOption"><span class="deprecated">buildOption()</span></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Option.html#_sphinxOption"><span class="deprecated">sphinxOption()</span></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.BuildExt.html#methods">Deimos\ORM\Extension\Query\BuildExt</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#_buildIf2String">buildIf2String()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#_buildInValue">buildInValue()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#_buildKey">buildKey()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#_buildSQLExpression">buildSQLExpression()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#_buildValue">buildValue()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#_buildWhereOne">buildWhereOne()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#_buildWhereOperator">buildWhereOperator()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Statement.html#methods">Deimos\ORM\Extension\Query\Statement</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Statement.html#_parameters">parameters()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Statement.html#_statement">statement()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Statement.html#_statementExec">statementExec()</a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-Deimos.ORM.Extension.Query.Model.html#methods">Deimos\ORM\Extension\Query\Model</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#_buildModels">buildModels()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#_buildTable">buildTable()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#_getCurrentClass">getCurrentClass()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#_getTableName">getTableName()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#_model">model()</a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#_refTable">refTable()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="defaults" id="$defaults">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Deimos.ORM.SelectQuery.html#28-33" title="Go to source code"><var>$defaults</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$defaults" class="anchor">#</a>
+				<code>[
+    <span class="php-quote">'fields'</span> =&gt; <span class="php-quote">'*'</span>
+]</code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="operators" id="$operators">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Deimos.ORM.SelectQuery.html#35-48" title="Go to source code"><var>$operators</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$operators" class="anchor">#</a>
+				<code>[
+    <span class="php-quote">'fields'</span>  =&gt; <span class="php-quote">'SELECT'</span>,
+    <span class="php-quote">'models'</span>  =&gt; <span class="php-quote">'FROM'</span>,
+    <span class="php-quote">'join'</span>    =&gt; <span class="php-quote">''</span>,
+    <span class="php-quote">'where'</span>   =&gt; <span class="php-quote">'WHERE'</span>,
+    <span class="php-quote">'groupBy'</span> =&gt; <span class="php-quote">'GROUP BY'</span>,
+    <span class="php-quote">'having'</span>  =&gt; <span class="php-quote">'HAVING'</span>,
+    <span class="php-quote">'orderBy'</span> =&gt; <span class="php-quote">'ORDER BY'</span>,
+    <span class="php-quote">'limit'</span>   =&gt; <span class="php-quote">'LIMIT'</span>,
+    <span class="php-quote">'option'</span>  =&gt; <span class="php-quote">'OPTION'</span>,
+]</code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Deimos.ORM.Query.html#properties">Deimos\ORM\Query</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Query.html#$builder"><var>$builder</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.BuildExt.html#properties">Deimos\ORM\Extension\Query\BuildExt</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.BuildExt.html#$allowOperator"><var>$allowOperator</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Model.html#properties">Deimos\ORM\Extension\Query\Model</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#$models"><var>$models</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Model.html#$storageModels"><var>$storageModels</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Field.html#properties">Deimos\ORM\Extension\Query\Field</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Field.html#$fields"><var>$fields</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Field.html#$storageFields"><var>$storageFields</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Join.html#properties">Deimos\ORM\Extension\Query\Join</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#$join"><var>$join</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Join.html#$storageJoin"><var>$storageJoin</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Where.html#properties">Deimos\ORM\Extension\Query\Where</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Where.html#$storageWhere"><var>$storageWhere</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Where.html#$where"><var>$where</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.GroupBy.html#properties">Deimos\ORM\Extension\Query\GroupBy</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.GroupBy.html#$groupBy"><var>$groupBy</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.GroupBy.html#$storageGroupBy"><var>$storageGroupBy</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Having.html#properties">Deimos\ORM\Extension\Query\Having</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Having.html#$having"><var>$having</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Having.html#$storageHaving"><var>$storageHaving</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.OrderBy.html#properties">Deimos\ORM\Extension\Query\OrderBy</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.OrderBy.html#$orderBy"><var>$orderBy</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.OrderBy.html#$storageOrderBy"><var>$storageOrderBy</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Limit.html#properties">Deimos\ORM\Extension\Query\Limit</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Limit.html#$limit"><var>$limit</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Limit.html#$storageLimit"><var>$storageLimit</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Offset.html#properties">Deimos\ORM\Extension\Query\Offset</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Offset.html#$storageOffset"><var>$storageOffset</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-Deimos.ORM.Extension.Query.Option.html#properties">Deimos\ORM\Extension\Query\Option</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Deimos.ORM.Extension.Query.Option.html#$option"><var>$option</var></a>, 
+			<a href="class-Deimos.ORM.Extension.Query.Option.html#$storageOption"><var>$storageOption</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>

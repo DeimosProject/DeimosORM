@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Deimos\ORM\Transaction</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-Deimos.html">
+						Deimos<span></span>
+					</a>
+
+						<ul>
+				<li class="active">
+					<a href="namespace-Deimos.ORM.html">
+						ORM<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Deimos.ORM.Constant.html">
+						Constant					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Deimos.ORM.Extension.html">
+						Extension<span></span>
+					</a>
+
+						<ul>
+				<li>
+					<a href="namespace-Deimos.ORM.Extension.Builder.html">
+						Builder					</a>
+
+						</li>
+				<li>
+					<a href="namespace-Deimos.ORM.Extension.Query.html">
+						Query					</a>
+
+						</li>
+							</ul></li></ul></li></ul></li>
+				<li>
+					<a href="namespace-PHP.html">
+						PHP					</a>
+
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Deimos.ORM.Builder.html">Builder</a></li>
+				<li><a href="class-Deimos.ORM.Config.html">Config</a></li>
+				<li><a href="class-Deimos.ORM.Connection.html">Connection</a></li>
+				<li><a href="class-Deimos.ORM.DeleteQuery.html">DeleteQuery</a></li>
+				<li><a href="class-Deimos.ORM.Entity.html">Entity</a></li>
+				<li><a href="class-Deimos.ORM.InsertQuery.html">InsertQuery</a></li>
+				<li><a href="class-Deimos.ORM.Query.html">Query</a></li>
+				<li><a href="class-Deimos.ORM.Reflection.html">Reflection</a></li>
+				<li><a href="class-Deimos.ORM.SelectQuery.html">SelectQuery</a></li>
+				<li><a href="class-Deimos.ORM.SQLExpression.html">SQLExpression</a></li>
+				<li class="active"><a href="class-Deimos.ORM.Transaction.html">Transaction</a></li>
+				<li><a href="class-Deimos.ORM.UpdateQuery.html">UpdateQuery</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Deimos.ORM.html" title="Summary of Deimos\ORM"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+				<li>
+					<a href="annotation-group-deprecated.html" title="List of elements with deprecated annotation">
+						<span>Deprecated</span>
+					</a>
+				</li>
+				<li>
+					<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+						<span>Todo</span>
+					</a>
+				</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Transaction</h1>
+
+
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Deimos.html">Deimos</a>\<a href="namespace-Deimos.ORM.html">ORM</a><br>
+		
+
+			<b>Located at</b> <a href="source-class-Deimos.ORM.Transaction.html#5-68" title="Go to source code">ORM/Transaction.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Deimos.ORM.Transaction.html#21-29" title="Go to source code">__construct</a>( <span><code><a href="class-Deimos.ORM.Builder.html">Deimos\ORM\Builder</a></code> <var>$builder</var></span> )</code>
+
+		<div class="description short">
+			<p>Transaction constructor.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Transaction constructor.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$builder</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="call" id="_call">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_call">#</a>
+		<code><a href="source-class-Deimos.ORM.Transaction.html#31-58" title="Go to source code">call</a>( <span>callable <var>$callable</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$callable</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="state" id="_state">
+
+		<td class="attributes"><code>
+			 public 
+
+			null|integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_state">#</a>
+		<code><a href="source-class-Deimos.ORM.Transaction.html#60-66" title="Go to source code">state</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					null|integer
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="STATE_ROLLBACK" id="STATE_ROLLBACK">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Deimos.ORM.Transaction.html#8" title="Go to source code"><b>STATE_ROLLBACK</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#STATE_ROLLBACK" class="anchor">#</a>
+				<code><span class="php-num">0</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="STATE_COMMIT" id="STATE_COMMIT">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-Deimos.ORM.Transaction.html#9" title="Go to source code"><b>STATE_COMMIT</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#STATE_COMMIT" class="anchor">#</a>
+				<code><span class="php-num">1</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="builder" id="$builder">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Deimos.ORM.Builder.html">Deimos\ORM\Builder</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Deimos.ORM.Transaction.html#11-14" title="Go to source code"><var>$builder</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$builder" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="state" id="$state">
+		<td class="attributes"><code>
+			protected  
+			null|integer
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Deimos.ORM.Transaction.html#16-19" title="Go to source code"><var>$state</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$state" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
