@@ -152,7 +152,7 @@ class ORM
             /**
              * @var $object Entity
              */
-            $object = new $class(null);
+            $object = new $class($this);
 
             $this->tableMap[$modelName] =
                 $object->tableName() ?:

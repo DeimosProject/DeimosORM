@@ -38,6 +38,7 @@ class Query extends \Deimos\Database\Queries\Query
     public function __construct(ORM $orm, $modelName)
     {
         parent::__construct($orm->database());
+
         $this->orm   = $orm;
         $this->class = $orm->mapClass($modelName);
         $this->table = $orm->mapTable($modelName);
@@ -116,6 +117,11 @@ class Query extends \Deimos\Database\Queries\Query
                 $this->class,
                 [$this->orm, false, $this->table]
             );
+
+            if (!$object)
+            {
+                return null;
+            }
 
             $object();
             $object->setModelName($this->modelName);
