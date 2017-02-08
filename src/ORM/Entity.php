@@ -199,7 +199,7 @@ class Entity implements \JsonSerializable
             throw new \InvalidArgumentException('Config model not found');
         }
 
-        return $this->relation($config, $arguments);
+        return $this->relation($config[$name], $arguments);
     }
 
     /**
@@ -215,12 +215,12 @@ class Entity implements \JsonSerializable
 
     protected function oneToMany(array &$config, array &$arguments)
     {
-        throw new \InvalidArgumentException(__METHOD__);
+        var_dump([__METHOD__ => $config]);
     }
 
     protected function manyToMany(array &$config, array &$arguments)
     {
-        throw new \InvalidArgumentException(__METHOD__);
+        var_dump([__METHOD__ => $config]);
     }
 
     /**

@@ -56,24 +56,24 @@ $orm = new \Deimos\ORM\ORM($builder, $database);
 //
 //]);
 
-$orm->register('user', \Deimos\ORM\Entity::class, [
+$orm->register('user', User::class, [
 
     // array key === callback name
     'roles'  => [
-        'type'  => 'manyToMany',
-//        'table' => 'usersRoles',  // optional, default usersRoles
-//
-//        'left'   => 'role',
-//        'leftId' => 'roleId',    // optional
-//
-//        'right'   => 'user',      // optional [callback name for roles]
-//        'rightId' => 'user_id',   // optional
+        'type' => 'manyToMany',
+        //        'table' => 'usersRoles',  // optional, default usersRoles
+        //
+        //        'left'   => 'role',
+        //        'leftId' => 'roleId',    // optional
+        //
+        //        'right'   => 'user',      // optional [callback name for roles]
+        //        'rightId' => 'user_id',   // optional
     ],
 
     // array key === callback name
     'images' => [
         'type'  => 'oneToMany',
-        'table' => 'imagesUsers',// optional, default usersImages
+        'table' => 'images',// optional, default usersImages
 
         'left' => 'image',
 
@@ -87,13 +87,21 @@ $user = $orm->repository('user')
     ->orderBy('id', 'DESC')
     ->findOne();
 
+if (!$user)
+{
+    $user = $orm->create('user', [
+        'firstName' => 'Maxim',
+        'lastName'  => 'Babichev',
+    ]);
+}
+
 // todo
 //$user->fetch('roles', ['images1' =>  'images']);
 
 //$user->roles() // manyToMany, oneToMany
 //$role->user()
 
-var_dump($user);
+var_dump($user->roles());
 
 //(new User($orm))->save([
 //    'first_name' => 'test',

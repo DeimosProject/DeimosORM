@@ -27,8 +27,7 @@ class Relationships
      * @var []
      */
     protected $rightPluralize = [
-//        'oneToOne',
-'manyToMany',
+        'manyToMany',
     ];
 
     /**
@@ -96,9 +95,9 @@ class Relationships
             $left = Inflector::singularize($this->right);
         }
 
-        $leftId  = $this->config->get('leftId');
+        $leftId = $this->config->get('leftId');
 
-        $right   = $this->config->get('right');
+        $right = $this->config->get('right');
 
         if ($right === null)
         {
@@ -117,6 +116,7 @@ class Relationships
             'type'   => $type,
             'table'  => $table,
             'model'  => $left,
+            'from'   => $this->left,
             'item'   => $item,
             'itemId' => $rightId,
             'isLeft' => 1
@@ -132,6 +132,7 @@ class Relationships
             'type'   => $type,
             'table'  => $table,
             'model'  => $this->left,
+            'from'   => $left,
             'item'   => $item,
             'itemId' => $leftId,
             'isLeft' => 0

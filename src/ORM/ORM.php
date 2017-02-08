@@ -106,9 +106,28 @@ class ORM
                 ->left($left)
                 ->right($right);
 
-            $this->configMap[$left]  = $relation->getLeft();
-            $this->configMap[$right] = $relation->getRight();
+            $map = [
+                $relation->getLeft(),
+                $relation->getRight()
+            ];
+
+            foreach ($map as $self)
+            {
+                $item = $self['item'];
+                $from = $self['from'];
+
+                if (!isset($this->configMap[$from]))
+                {
+                    $this->configMap[$from] = [$item => $self];
+                }
+                else
+                {
+                    $this->configMap[$from][$item] = $self;
+                }
+
+            }
         }
+
     }
 
     /**
@@ -179,8 +198,11 @@ class ORM
      * @param string $modelName
      *
      * @return Entity
+     *
+     * @throws Exceptions\ModelNotLoad
+     * @throws Exceptions\ModelNotModify
      */
-    public function create($modelName)
+    public function create($modelName, array $storage = null)
     {
         $class = $this->mapClass($modelName);
 
@@ -194,6 +216,11 @@ class ORM
         );
 
         $object->setModelName($modelName);
+
+        if ($storage)
+        {
+            $object->save($storage);
+        }
 
         return $object;
     }
