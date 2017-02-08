@@ -93,10 +93,11 @@ class ORM
      */
     public function repository($modelName)
     {
-        $class = $this->mapClass($modelName);
-        $table = $this->mapTable($modelName);
-
-        return new Queries\Query($this->database, $class, $table);
+        return new Queries\Query(
+            $this->database,
+            $this->mapClass($modelName),
+            $this->mapTable($modelName)
+        );
     }
 
     /**
@@ -107,9 +108,12 @@ class ORM
     public function create($modelName)
     {
         $class = $this->mapClass($modelName);
-        $table = $this->mapTable($modelName);
 
-        return new $class($this->database, true, $table);
+        return new $class(
+            $this->database,
+            true,
+            $this->mapTable($modelName)
+        );
     }
 
 }
