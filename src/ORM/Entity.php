@@ -2,19 +2,18 @@
 
 namespace Deimos\ORM;
 
-use Deimos\ORM\Constant\Relation;
+use Deimos\Database\Database;
+use Deimos\ORM\Exceptions\ModelNotLoad;
+use Deimos\ORM\Exceptions\ModelNotModify;
+use Doctrine\Common\Inflector\Inflector;
 
-class Entity implements \JsonSerializable
+class Entity
 {
 
-    const STATE_CREATED = 0;
-    const STATE_LOADED  = 1;
-    const STATE_QUERY   = 2;
-
     /**
-     * @var Builder
+     * @var Database
      */
-    protected $builder;
+    private $database;
 
     /**
      * @var string
@@ -22,56 +21,110 @@ class Entity implements \JsonSerializable
     protected $primaryKey = 'id';
 
     /**
+     * @var bool
+     */
+    protected $isLoad;
+
+    /**
+     * @var bool
+     */
+    protected $isNew;
+
+    /**
      * @var string
      */
-    protected $tableName;
+    protected $table;
 
     /**
      * @var array
      */
-    protected $storageOrigin = [];
+    protected $config;
 
     /**
      * @var array
      */
-    protected $storageModify = [];
+    protected $origin = [];
 
     /**
-     * @var int
+     * @var array
      */
-    protected $state;
+    protected $modify = [];
 
     /**
-     * Entity constructor.
+     * User constructor.
      *
-     * @param Builder $builder
-     * @param int     $state
-     * @param null    $tableName
+     * @param Database $database
+     * @param bool     $isNew
+     * @param string   $table
      */
-    public function __construct($builder, $state = self::STATE_CREATED, $tableName = null)
+    public function __construct($database, $isNew = true, $table = null)
     {
-        $this->builder = $builder;
-        $this->state   = $state;
+        $this->table    = $table;
+        $this->database = $database;
+        $this->isNew    = $isNew;
 
-        if ($tableName)
+        if ($this->isNew)
         {
-            $this->tableName = $tableName;
+            $this->isLoad = false;
         }
     }
 
     /**
-     * @param $name
+     * @return mixed
+     */
+    public function id()
+    {
+        return $this->get($this->primaryKey);
+    }
+
+    /**
+     * @return string
+     */
+    public function tableName()
+    {
+        if (!$this->table && self::class !== static::class)
+        {
+            $ref   = new \ReflectionClass(static::class);
+            $table = $ref->getName();
+            $table = lcfirst($table);
+
+            return Inflector::pluralize($table);
+        }
+
+        return $this->table;
+    }
+
+    /**
+     * @return Database
+     */
+    protected function database()
+    {
+        return $this->database;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function get($name)
+    {
+        if (isset($this->modify[$name]))
+        {
+            return $this->modify[$name];
+        }
+
+        return $this->origin[$name];
+    }
+
+    /**
+     * @param string $name
      *
      * @return mixed
      */
     public function __get($name)
     {
-        if (isset($this->storageModify[$name]))
-        {
-            return $this->storageModify[$name];
-        }
-
-        return $this->getOrigin($name);
+        return $this->get($name);
     }
 
     /**
@@ -80,138 +133,110 @@ class Entity implements \JsonSerializable
      */
     public function __set($name, $value)
     {
-        if ($this->isLoaded() || $this->isCreated())
-        {
-            $this->storageModify[$name] = $value;
-        }
-        else
-        {
-            $this->storageOrigin[$name] = $value;
-        }
+        $this->set($name, $value);
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function set($name, $value)
+    {
+        $this->modify[$name] = $value;
+    }
+
+    /**
+     * load data
+     */
+    protected function toLoad()
+    {
+        $this->origin = array_merge($this->origin, $this->modify);
+
+        $this->modify = [];
+        $this->isNew  = false;
+        $this->isLoad = true;
+    }
+
+    /**
+     * @param array $storage
      *
-     * @return mixed
-     */
-    public function getOrigin($name)
-    {
-        return $this->storageOrigin[$name];
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLoaded()
-    {
-        return $this->state === self::STATE_LOADED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCreated()
-    {
-        return $this->state === self::STATE_CREATED;
-    }
-
-    /**
-     * @return int
-     */
-    public function id()
-    {
-        return $this->{$this->primaryKey};
-    }
-
-    /**
      * @return bool
      *
-     * @throws \InvalidArgumentException
+     * @throws ModelNotLoad
+     * @throws ModelNotModify
+     */
+    public function save(array $storage = [])
+    {
+        foreach ($storage as $key => $value)
+        {
+            $this->set($key, $value);
+        }
+
+        if (empty($this->modify))
+        {
+            throw new ModelNotModify($this->table);
+        }
+
+        if ($this->isNew)
+        {
+            $insertId = $this->database()->insert()
+                ->from($this->table)
+                ->values($this->modify)
+                ->insert();
+
+            if ($insertId)
+            {
+                $this->set($this->primaryKey, $insertId);
+                $this();
+            }
+
+            return (bool)$insertId;
+        }
+
+        if (!$this->isLoad)
+        {
+            throw new ModelNotLoad($this->table);
+        }
+
+        $update = (bool)$this->database()->update()
+            ->from($this->table)
+            ->values($this->modify)
+            ->where($this->primaryKey, $this->id())
+            ->updateOne();
+
+        if ($update)
+        {
+            $this();
+        }
+
+        return $update;
+    }
+
+    /**
+     * @return bool
+     *
+     * @throws ModelNotLoad
      */
     public function delete()
     {
-        if (!$this->isLoaded())
+        if (!$this->isLoad)
         {
-            throw new \InvalidArgumentException('Model is not load');
+            throw new ModelNotLoad($this->table);
         }
 
-        $primaryKey = $this->primaryKey;
+        $this->modify = $this->asArray();
+        $this->origin = [];
 
-        $isDelete = $this->builder->delete()
-            ->model($this->tableName)
-            ->where($primaryKey, $this->{$primaryKey})
-            ->deleteOne();
+        $delete = (bool)$this->database()->delete()
+            ->from($this->table)
+            ->where($this->primaryKey, $this->id())
+            ->delete();
 
-        if ($isDelete)
-        {
-            unset($this->storageOrigin[$primaryKey]);
-            $this->state = self::STATE_CREATED;
-        }
+        unset($this->modify[$this->primaryKey]);
+        $this->isNew  = true;
+        $this->isLoad = false;
 
-        return $isDelete;
-    }
-
-    /**
-     * @return bool
-     */
-    public function save()
-    {
-        $primaryKey = $this->primaryKey;
-
-        if ($this->isLoaded())
-        {
-            $update = $this->builder->updateEntity($this->tableName())
-                ->setData($this->modifyAsArray())
-                ->where($primaryKey, $this->{$primaryKey})
-                ->updateOne();
-
-            $this->modify2Origin();
-
-            return $update;
-        }
-
-        $id = $this->builder->create()
-            ->model($this->tableName())
-            ->setData($this->modifyAsArray())
-            ->insert();
-
-        if ($id)
-        {
-            $this->storageModify[$primaryKey] = $id;
-            $this->modify2Origin();
-
-            $this->state = self::STATE_LOADED;
-        }
-
-        return $id > 0;
-    }
-
-    /**
-     * @return string
-     */
-    protected function tableName()
-    {
-        if ($this->isLoaded())
-        {
-            return $this->tableName;
-        }
-
-        return $this->builder->reflection()->getTableName(static::class);
-    }
-
-    /**
-     * @return array
-     */
-    public function modifyAsArray()
-    {
-        return $this->storageModify;
-    }
-
-    protected function modify2Origin()
-    {
-        $this->storageOrigin = $this->asArray();
-        $this->storageModify = [];
+        return $delete;
     }
 
     /**
@@ -219,90 +244,25 @@ class Entity implements \JsonSerializable
      */
     public function asArray()
     {
-        return array_merge($this->originAsArray(), $this->modifyAsArray());
+        return array_merge($this->origin, $this->modify);
     }
 
     /**
-     * @return array
-     */
-    public function originAsArray()
-    {
-        return $this->storageOrigin;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->asArray();
-    }
-
-    /**
-     * @param $value
-     */
-    public function __invoke($value)
-    {
-        $this->state = $value;
-    }
-
-    /**
-     * @param $model
-     *
-     * @return SelectQuery
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function manyToMany($model)
-    {
-        return $this->relation($model, Relation::MANY2MANY);
-    }
-
-    /**
-     * @param string $model
-     * @param string $type
-     *
-     * @return SelectQuery
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function relation($model, $type)
-    {
-        return $this->builder->relation($this, $model, $type);
-    }
-
-    /**
-     * @param $model
-     *
-     * @return SelectQuery
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function oneToOne($model)
-    {
-        return $this->relation($model, Relation::ONE2ONE);
-    }
-
-    /**
-     * @param $model
-     *
-     * @return SelectQuery
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function oneToMany($model)
-    {
-        return $this->relation($model, Relation::ONE2MANY);
-    }
-
-    /**
-     * @param $name
+     * @param string $name
      *
      * @return bool
      */
     public function __isset($name)
     {
-        return isset($this->storageOrigin[$name]);
+        return isset($this->origin[$name]);
+    }
+
+    /**
+     * load data
+     */
+    public function __invoke()
+    {
+        $this->toLoad();
     }
 
 }
