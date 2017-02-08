@@ -7,13 +7,19 @@ use Deimos\ORM\Exceptions\ModelNotLoad;
 use Deimos\ORM\Exceptions\ModelNotModify;
 use Doctrine\Common\Inflector\Inflector;
 
-class Entity
+class Entity implements \JsonSerializable
 {
+
+    /**
+     * @var ORM
+     */
+    protected $orm;
+
 
     /**
      * @var Database
      */
-    private $database;
+    protected $database;
 
     /**
      * @var string
@@ -41,6 +47,11 @@ class Entity
     protected $config;
 
     /**
+     * @var string
+     */
+    protected $modelName;
+
+    /**
      * @var array
      */
     protected $origin = [];
@@ -53,14 +64,15 @@ class Entity
     /**
      * User constructor.
      *
-     * @param Database $database
-     * @param bool     $isNew
-     * @param string   $table
+     * @param ORM    $orm
+     * @param bool   $isNew
+     * @param string $table
      */
-    public function __construct($database, $isNew = true, $table = null)
+    public function __construct($orm, $isNew = true, $table = null)
     {
         $this->table    = $table;
-        $this->database = $database;
+        $this->orm      = $orm;
+        $this->database = $orm->database();
         $this->isNew    = $isNew;
 
         if ($this->isNew)
@@ -158,6 +170,60 @@ class Entity
     }
 
     /**
+     * @param string $value
+     */
+    public function setModelName($value)
+    {
+        $this->modelName = $value;
+    }
+
+    /**
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @return array|static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __call($name, array $arguments)
+    {
+        if (!$this->modelName)
+        {
+            throw new \InvalidArgumentException('Model Name not found');
+        }
+
+        $config = $this->orm->config($this->modelName);
+
+        if (!$config)
+        {
+            throw new \InvalidArgumentException('Config model not found');
+        }
+
+        return $this->relation($config, $arguments);
+    }
+
+    /**
+     * @param array $config
+     * @param array $arguments
+     *
+     * @return array|static
+     */
+    protected function relation(array &$config, array &$arguments)
+    {
+        return $this->{$config['type']}($config, $arguments);
+    }
+
+    protected function oneToMany(array &$config, array &$arguments)
+    {
+        throw new \InvalidArgumentException(__METHOD__);
+    }
+
+    protected function manyToMany(array &$config, array &$arguments)
+    {
+        throw new \InvalidArgumentException(__METHOD__);
+    }
+
+    /**
      * @param array $storage
      *
      * @return bool
@@ -180,7 +246,7 @@ class Entity
         if ($this->isNew)
         {
             $insertId = $this->database()->insert()
-                ->from($this->table)
+                ->from($this->tableName())
                 ->values($this->modify)
                 ->insert();
 
@@ -199,7 +265,7 @@ class Entity
         }
 
         $update = (bool)$this->database()->update()
-            ->from($this->table)
+            ->from($this->tableName())
             ->values($this->modify)
             ->where($this->primaryKey, $this->id())
             ->updateOne();
@@ -228,7 +294,7 @@ class Entity
         $this->origin = [];
 
         $delete = (bool)$this->database()->delete()
-            ->from($this->table)
+            ->from($this->tableName())
             ->where($this->primaryKey, $this->id())
             ->delete();
 
@@ -245,6 +311,14 @@ class Entity
     public function asArray()
     {
         return array_merge($this->origin, $this->modify);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return $this->asArray();
     }
 
     /**

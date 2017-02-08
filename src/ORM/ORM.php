@@ -2,6 +2,8 @@
 
 namespace Deimos\ORM;
 
+use Deimos\Builder\Builder;
+use Deimos\Config\ConfigObject;
 use Deimos\Database\Database;
 use Doctrine\Common\Inflector\Inflector;
 
@@ -9,50 +11,124 @@ class ORM
 {
 
     /**
+     * @var Builder
+     */
+    protected $builder;
+
+    /**
      * @var Database
      */
     protected $database;
 
     /**
-     * @var []
-     */
-    protected $configure = [];
-
-    /**
-     * @var []
+     * @var string[]
      */
     protected $classMap = [];
 
     /**
-     * @var []
+     * @var string[]
      */
     protected $tableMap = [];
 
     /**
+     * @var []
+     */
+    protected $configMap = [];
+
+    /**
+     * @var Relationships[]
+     */
+    protected $relationMap = [
+        'oneToMany'  => Relationships\OneToMany::class,
+        'manyToMany' => Relationships\ManyToMany::class,
+    ];
+
+    /**
      * ORM constructor.
      *
+     * @param Builder  $builder
      * @param Database $database
      */
-    public function __construct(Database $database)
+    public function __construct(Builder $builder, Database $database)
     {
+        $this->builder  = $builder;
         $this->database = $database;
+    }
+
+    /**
+     * @return Database
+     */
+    public function database()
+    {
+        return $this->database;
+    }
+
+    /**
+     * @param string $modelName
+     *
+     * @return array
+     */
+    public function config($modelName)
+    {
+        if (!isset($this->configMap[$modelName]))
+        {
+            return null;
+        }
+
+        return $this->configMap[$modelName];
     }
 
     /**
      * @param string $modelName
      * @param string $class
+     * @param array  $config
      */
-    public function register($modelName, $class)
+    public function register($modelName, $class, array $config = null)
     {
         $this->classMap[$modelName] = $class;
+
+        if (is_array($config))
+        {
+            $this->registerConfig($modelName, $config);
+        }
+    }
+
+    protected function registerConfig($left, array $allConfig)
+    {
+        foreach ($allConfig as $right => $config)
+        {
+            $object = new ConfigObject($this->builder, $config);
+
+            $type = $object->getRequired('type');
+
+            $relation = $this->relationships($type)
+                ->config($object)
+                ->left($left)
+                ->right($right);
+
+            $this->configMap[$left]  = $relation->getLeft();
+            $this->configMap[$right] = $relation->getRight();
+        }
     }
 
     /**
-     * @param $modelName
+     * @param string $type
      *
-     * @return mixed
+     * @return Relationships
      */
-    protected function mapClass($modelName)
+    protected function relationships($type)
+    {
+        $relationClass = $this->relationMap[$type];
+
+        return new $relationClass();
+    }
+
+    /**
+     * @param string $modelName
+     *
+     * @return string
+     */
+    public function mapClass($modelName)
     {
         if (isset($this->classMap[$modelName]))
         {
@@ -63,11 +139,11 @@ class ORM
     }
 
     /**
-     * @param $modelName
+     * @param string $modelName
      *
-     * @return mixed
+     * @return string
      */
-    protected function mapTable($modelName)
+    public function mapTable($modelName)
     {
         if (!isset($this->tableMap[$modelName]))
         {
@@ -94,9 +170,8 @@ class ORM
     public function repository($modelName)
     {
         return new Queries\Query(
-            $this->database,
-            $this->mapClass($modelName),
-            $this->mapTable($modelName)
+            $this,
+            $modelName
         );
     }
 
@@ -109,11 +184,18 @@ class ORM
     {
         $class = $this->mapClass($modelName);
 
-        return new $class(
-            $this->database,
+        /**
+         * @var Entity $object
+         */
+        $object = new $class(
+            $this,
             true,
             $this->mapTable($modelName)
         );
+
+        $object->setModelName($modelName);
+
+        return $object;
     }
 
 }
