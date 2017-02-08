@@ -60,14 +60,14 @@ $orm->register('user', User::class, [
 
     // array key === callback name
     'roles'  => [
-        'type' => 'manyToMany',
-        //        'table' => 'usersRoles',  // optional, default usersRoles
-        //
+        'type'  => 'manyToMany',
+        'table' => 'rolesUsers',  // optional, default usersRoles
+
         //        'left'   => 'role',
-        //        'leftId' => 'roleId',    // optional
+                'leftId' => 'roleId',    // optional
         //
         //        'right'   => 'user',      // optional [callback name for roles]
-        //        'rightId' => 'user_id',   // optional
+                'rightId' => 'userId',   // optional
     ],
 
     // array key === callback name
@@ -77,8 +77,8 @@ $orm->register('user', User::class, [
 
         'left' => 'image',
 
-        'right'   => 'user',      // optional [callback name for image]
-        'rightId' => 'user_id',   // optional
+        'right' => 'user',      // optional [callback name for image]
+        //        'rightId' => 'user_id',   // optional
     ],
 
 ]);
@@ -101,8 +101,8 @@ if (!$user)
 //$user->roles() // manyToMany, oneToMany
 //$role->user()
 
-var_dump($user->roles());
-
+//var_dump($user->roles()->find(false));
+//die;
 //(new User($orm))->save([
 //    'first_name' => 'test',
 //    'last_name' => 'test',

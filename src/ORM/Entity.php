@@ -92,6 +92,14 @@ class Entity implements \JsonSerializable
     /**
      * @return string
      */
+    public function primaryKey()
+    {
+        return $this->primaryKey;
+    }
+
+    /**
+     * @return string
+     */
     public function tableName()
     {
         if (!$this->table && self::class !== static::class)
@@ -181,7 +189,7 @@ class Entity implements \JsonSerializable
      * @param string $name
      * @param array  $arguments
      *
-     * @return array|static
+     * @return Queries\Query
      *
      * @throws \InvalidArgumentException
      */
@@ -206,21 +214,58 @@ class Entity implements \JsonSerializable
      * @param array $config
      * @param array $arguments
      *
-     * @return array|static
+     * @return Queries\Query
      */
     protected function relation(array &$config, array &$arguments)
     {
         return $this->{$config['type']}($config, $arguments);
     }
 
+    /**
+     * @param array $config
+     * @param array $arguments
+     *
+     * @return Queries\Query
+     */
     protected function oneToMany(array &$config, array &$arguments)
     {
-        var_dump([__METHOD__ => $config]);
+        $key = $this->primaryKey;
+
+        if ($config['itemId'])
+        {
+            $key = $config['itemId'];
+        }
+        else if ($config['model'] !== $config['item'])
+        {
+            $key = $config['from'] . ucfirst($this->primaryKey);
+        }
+
+        return $this->orm->repository($config['model'])
+            ->where($key, $this->id());
     }
 
+    /**
+     * @param array $config
+     * @param array $arguments
+     *
+     * @return Queries\Query
+     *
+     * @throws \Deimos\QueryBuilder\Exceptions\NotFound
+     */
     protected function manyToMany(array &$config, array &$arguments)
     {
-        var_dump([__METHOD__ => $config]);
+        $table = $config['table'];
+        $model = $config['model'];
+        $from  = $config['from'];
+
+        $pkFrom  = $this->orm->mapPK($from);
+        $pkModel = $this->orm->mapPK($model);
+
+        return $this->orm->repository(['right' => $model])
+            ->select(['right.*'])
+            ->join(['leftRight' => $table])
+            ->on('right.' . $pkModel, 'leftRight.' . $model . ucfirst($pkModel))
+            ->where('leftRight.' . $from . ucfirst($pkFrom), $this->id());
     }
 
     /**

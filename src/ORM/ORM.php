@@ -30,6 +30,12 @@ class ORM
      */
     protected $tableMap = [];
 
+
+    /**
+     * @var string[]
+     */
+    protected $pkMap = [];
+
     /**
      * @var []
      */
@@ -162,6 +168,21 @@ class ORM
      *
      * @return string
      */
+    public function mapPK($modelName)
+    {
+        if (!isset($this->pkMap[$modelName]))
+        {
+            $this->mapTable($modelName);
+        }
+
+        return $this->pkMap[$modelName];
+    }
+
+    /**
+     * @param string $modelName
+     *
+     * @return string
+     */
     public function mapTable($modelName)
     {
         if (!isset($this->tableMap[$modelName]))
@@ -172,6 +193,8 @@ class ORM
              * @var $object Entity
              */
             $object = new $class($this);
+
+            $this->pkMap[$modelName] = $object->primaryKey();
 
             $this->tableMap[$modelName] =
                 $object->tableName() ?:
