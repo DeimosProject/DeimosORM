@@ -3,6 +3,8 @@
 namespace Deimos\ORM;
 
 use Deimos\Database\Database;
+use Deimos\ORM\Exceptions\ModelNotLoad;
+use Deimos\ORM\Exceptions\ModelNotModify;
 use Doctrine\Common\Inflector\Inflector;
 
 class Entity
@@ -159,12 +161,20 @@ class Entity
      * @param array $storage
      *
      * @return bool
+     *
+     * @throws ModelNotLoad
+     * @throws ModelNotModify
      */
     public function save(array $storage = [])
     {
         foreach ($storage as $key => $value)
         {
             $this->set($key, $value);
+        }
+
+        if (empty($this->modify))
+        {
+            throw new ModelNotModify($this->table);
         }
 
         if ($this->isNew)
@@ -185,7 +195,7 @@ class Entity
 
         if (!$this->isLoad)
         {
-            throw new \InvalidArgumentException(__CLASS__);
+            throw new ModelNotLoad($this->table);
         }
 
         $update = (bool)$this->database()->update()
@@ -200,6 +210,33 @@ class Entity
         }
 
         return $update;
+    }
+
+    /**
+     * @return bool
+     *
+     * @throws ModelNotLoad
+     */
+    public function delete()
+    {
+        if (!$this->isLoad)
+        {
+            throw new ModelNotLoad($this->table);
+        }
+
+        $this->modify = $this->asArray();
+        $this->origin = [];
+
+        $delete = (bool)$this->database()->delete()
+            ->from($this->table)
+            ->where($this->primaryKey, $this->id())
+            ->delete();
+
+        unset($this->modify[$this->primaryKey]);
+        $this->isNew  = true;
+        $this->isLoad = false;
+
+        return $delete;
     }
 
     /**

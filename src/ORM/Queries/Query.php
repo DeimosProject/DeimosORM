@@ -4,6 +4,7 @@ namespace Deimos\ORM\Queries;
 
 use Deimos\Database\Connection;
 use Deimos\Database\Database;
+use Deimos\ORM\Entity;
 
 class Query extends \Deimos\Database\Queries\Query
 {
@@ -50,60 +51,60 @@ class Query extends \Deimos\Database\Queries\Query
     /**
      * @param bool $asObject
      *
-     * @return array
+     * @return array|Entity[]
      */
     public function find($asObject = true)
     {
-        if (!$asObject)
+        if ($asObject)
         {
-            return parent::find();
+            $objects = $this
+                ->database
+                ->queryInstruction($this)
+                ->fetchAll(
+                    Connection::FETCH_CLASS,
+                    $this->class,
+                    [$this->database, false, $this->table]
+                );
+
+            foreach ($objects as $object)
+            {
+                $object();
+            }
+
+            return $objects;
         }
 
-        $objects = $this
-            ->database
-            ->queryInstruction($this)
-            ->fetchAll(
-                Connection::FETCH_CLASS,
-                $this->class,
-                [$this->database, false, $this->table]
-            );
-
-        foreach ($objects as $object)
-        {
-            $object();
-        }
-
-        return $objects;
+        return parent::find();
     }
 
     /**
      * @param bool $asObject
      *
-     * @return mixed
+     * @return array|Entity
      */
     public function findOne($asObject = true)
     {
-        if (!$asObject)
+        if ($asObject)
         {
-            return parent::findOne();
+            $self = clone $this;
+            $self->limit(1);
+
+            $sth = $self
+                ->database
+                ->queryInstruction($self);
+
+            $object = $sth->fetchObject(
+                $this->class,
+                [$this->database, false, $this->table]
+            );
+
+            $object();
+            $sth->closeCursor();
+
+            return $object;
         }
 
-        $self = clone $this;
-        $self->limit(1);
-
-        $sth = $self
-            ->database
-            ->queryInstruction($self);
-
-        $object = $sth->fetchObject(
-            $this->class,
-            [$this->database, false, $this->table]
-        );
-
-        $object();
-        $sth->closeCursor();
-
-        return $object;
+        return parent::findOne();
     }
 
 }
