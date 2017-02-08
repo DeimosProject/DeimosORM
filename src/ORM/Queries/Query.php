@@ -3,34 +3,47 @@
 namespace Deimos\ORM\Queries;
 
 use Deimos\Database\Connection;
-use Deimos\Database\Database;
 use Deimos\ORM\Entity;
+use Deimos\ORM\ORM;
 
 class Query extends \Deimos\Database\Queries\Query
 {
 
     /**
-     * @var string $class
+     * @var ORM
+     */
+    protected $orm;
+
+    /**
+     * @var string
      */
     protected $class;
 
     /**
-     * @var string $table
+     * @var string
      */
     protected $table;
 
     /**
+     * @var string
+     */
+    protected $modelName;
+
+    /**
      * Instruction constructor.
      *
-     * @param Database $database
-     * @param string   $class
-     * @param string   $table
+     * @param ORM    $orm
+     * @param string $modelName
      */
-    public function __construct(Database $database, $class, $table)
+    public function __construct(ORM $orm, $modelName)
     {
-        parent::__construct($database);
-        $this->class = $class;
-        $this->table = $table;
+        parent::__construct($orm->database());
+
+        $this->orm   = $orm;
+        $this->class = $orm->mapClass($modelName);
+        $this->table = $orm->mapTable($modelName);
+
+        $this->modelName = $modelName;
 
         $this->from($this->table);
     }
@@ -63,12 +76,16 @@ class Query extends \Deimos\Database\Queries\Query
                 ->fetchAll(
                     Connection::FETCH_CLASS,
                     $this->class,
-                    [$this->database, false, $this->table]
+                    [$this->orm, false, $this->table]
                 );
 
+            /**
+             * @var Entity[] $objects
+             */
             foreach ($objects as $object)
             {
                 $object();
+                $object->setModelName($this->modelName);
             }
 
             return $objects;
@@ -93,12 +110,22 @@ class Query extends \Deimos\Database\Queries\Query
                 ->database
                 ->queryInstruction($self);
 
+            /**
+             * @var Entity $object
+             */
             $object = $sth->fetchObject(
                 $this->class,
-                [$this->database, false, $this->table]
+                [$this->orm, false, $this->table]
             );
 
+            if (!$object)
+            {
+                return null;
+            }
+
             $object();
+            $object->setModelName($this->modelName);
+
             $sth->closeCursor();
 
             return $object;
