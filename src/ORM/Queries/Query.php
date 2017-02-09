@@ -39,13 +39,20 @@ class Query extends \Deimos\Database\Queries\Query
     {
         parent::__construct($orm->database());
 
+        $alias = $modelName;
+        if (is_array($modelName))
+        {
+            $alias     = key($modelName);
+            $modelName = current($modelName);
+        }
+
         $this->orm   = $orm;
         $this->class = $orm->mapClass($modelName);
         $this->table = $orm->mapTable($modelName);
 
         $this->modelName = $modelName;
 
-        $this->from($this->table);
+        $this->from([$alias => $this->table]);
     }
 
     /**

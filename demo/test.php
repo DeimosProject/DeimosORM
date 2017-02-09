@@ -7,6 +7,11 @@ class User extends \Deimos\ORM\Entity
 
 }
 
+class Role extends \Deimos\ORM\Entity
+{
+
+}
+
 $builder = new \Deimos\Builder\Builder();
 
 $configObject = new \Deimos\Config\ConfigObject($builder, [
@@ -56,45 +61,54 @@ $orm = new \Deimos\ORM\ORM($builder, $database);
 //
 //]);
 
-$orm->register('user', \Deimos\ORM\Entity::class, [
+$orm->register('role', Role::class);
+
+$orm->register('user', User::class, [
 
     // array key === callback name
     'roles'  => [
         'type'  => 'manyToMany',
-//        'table' => 'usersRoles',  // optional, default usersRoles
+//        'table' => 'rolesUsers',  // optional, default usersRoles
 //
-//        'left'   => 'role',
-//        'leftId' => 'roleId',    // optional
-//
-//        'right'   => 'user',      // optional [callback name for roles]
-//        'rightId' => 'user_id',   // optional
+                'left'   => 'role',
+                'leftId' => 'roleKey',    // optional
+//        //
+//        //        'right'   => 'user',      // optional [callback name for roles]
+                'rightId' => 'user_id',   // optional
     ],
 
     // array key === callback name
     'images' => [
         'type'  => 'oneToMany',
-        'table' => 'imagesUsers',// optional, default usersImages
 
         'left' => 'image',
 
-        'right'   => 'user',      // optional [callback name for image]
-        'rightId' => 'user_id',   // optional
+//        'right' => 'user',      // optional [callback name for image]
+                'rightId' => 'user_key',   // optional
     ],
 
 ]);
 
 $user = $orm->repository('user')
-    ->orderBy('id', 'DESC')
+//    ->orderBy('id', 'DESC')
     ->findOne();
 
-// todo
-//$user->fetch('roles', ['images1' =>  'images']);
+if (!$user)
+{
+    $user = $orm->create('user', [
+        'firstName' => 'Maxim',
+        'lastName'  => 'Babichev',
+    ]);
+}
 
-//$user->roles() // manyToMany, oneToMany
+$roles = $user->roles();
+
+var_dump( $roles->findOne()->users()->find() );
+
 //$role->user()
 
-var_dump($user);
-
+//var_dump($user->roles()->find(false));
+//die;
 //(new User($orm))->save([
 //    'first_name' => 'test',
 //    'last_name' => 'test',

@@ -92,6 +92,14 @@ class Entity implements \JsonSerializable
     /**
      * @return string
      */
+    public function primaryKey()
+    {
+        return $this->primaryKey;
+    }
+
+    /**
+     * @return string
+     */
     public function tableName()
     {
         if (!$this->table && self::class !== static::class)
@@ -181,7 +189,7 @@ class Entity implements \JsonSerializable
      * @param string $name
      * @param array  $arguments
      *
-     * @return array|static
+     * @return Queries\Query
      *
      * @throws \InvalidArgumentException
      */
@@ -199,28 +207,68 @@ class Entity implements \JsonSerializable
             throw new \InvalidArgumentException('Config model not found');
         }
 
-        return $this->relation($config, $arguments);
+        return $this->relation($config[$name], $arguments);
     }
 
     /**
      * @param array $config
      * @param array $arguments
      *
-     * @return array|static
+     * @return Queries\Query
      */
     protected function relation(array &$config, array &$arguments)
     {
         return $this->{$config['type']}($config, $arguments);
     }
 
+    /**
+     * @param array $config
+     * @param array $arguments
+     *
+     * @return Queries\Query
+     */
     protected function oneToMany(array &$config, array &$arguments)
     {
-        throw new \InvalidArgumentException(__METHOD__);
+        $key = $this->primaryKey;
+
+        if ($config['itemId'])
+        {
+            $key = $config['itemId'];
+        }
+        else if ($config['model'] !== $config['item'])
+        {
+            $key = $config['from'] . ucfirst($this->primaryKey);
+        }
+
+        return $this->orm->repository($config['model'])
+            ->where($key, $this->id());
     }
 
+    /**
+     * @param array $config
+     * @param array $arguments
+     *
+     * @return Queries\Query
+     *
+     * @throws \Deimos\QueryBuilder\Exceptions\NotFound
+     */
     protected function manyToMany(array &$config, array &$arguments)
     {
-        throw new \InvalidArgumentException(__METHOD__);
+        $table = $config['table'];
+        $model = $config['model'];
+        $from  = $config['from'];
+
+        $pkModel = $this->orm->mapPK($model);
+        $pkFrom  = $this->orm->mapPK($from);
+
+        $leftRightModel = $config['modelId'] ?: $model . ucfirst($pkModel);
+        $leftRightFrom  = $config['itemId'] ?: $from . ucfirst($pkFrom);
+
+        return $this->orm->repository(['right' => $model])
+            ->select(['right.*'])
+            ->join(['leftRight' => $table])->inner()
+            ->on('right.' . $pkModel, 'leftRight.' . $leftRightModel)
+            ->where('leftRight.' . $leftRightFrom, $this->id());
     }
 
     /**
@@ -311,6 +359,11 @@ class Entity implements \JsonSerializable
     public function asArray()
     {
         return array_merge($this->origin, $this->modify);
+    }
+
+    public function __debugInfo()
+    {
+        return $this->asArray();
     }
 
     /**
