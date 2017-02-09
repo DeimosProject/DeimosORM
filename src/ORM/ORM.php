@@ -85,6 +85,24 @@ class ORM
     }
 
     /**
+     * @param array $storage
+     *
+     * @return static
+     */
+    public function setConfig(array $storage)
+    {
+        foreach ($storage as $modelName => $config)
+        {
+            $class     = isset($config['class']) ? $config['class'] : Entity::class;
+            $relations = isset($config['relations']) ? $config['relations'] : [];
+
+            $this->register($modelName, $class, $relations);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $modelName
      * @param string $class
      * @param array  $config
