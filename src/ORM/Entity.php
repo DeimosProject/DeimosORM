@@ -258,14 +258,17 @@ class Entity implements \JsonSerializable
         $model = $config['model'];
         $from  = $config['from'];
 
-        $pkFrom  = $this->orm->mapPK($from);
         $pkModel = $this->orm->mapPK($model);
+        $pkFrom  = $this->orm->mapPK($from);
+
+        $leftRightModel = $config['leftId'] ?: $model . ucfirst($pkModel);
+        $leftRightFrom  = $config['rightId'] ?: $from . ucfirst($pkFrom);
 
         return $this->orm->repository(['right' => $model])
             ->select(['right.*'])
             ->join(['leftRight' => $table])
-            ->on('right.' . $pkModel, 'leftRight.' . $model . ucfirst($pkModel))
-            ->where('leftRight.' . $from . ucfirst($pkFrom), $this->id());
+            ->on('right.' . $pkModel, 'leftRight.' . $leftRightModel)
+            ->where('leftRight.' . $leftRightFrom, $this->id());
     }
 
     /**
