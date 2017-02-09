@@ -261,12 +261,12 @@ class Entity implements \JsonSerializable
         $pkModel = $this->orm->mapPK($model);
         $pkFrom  = $this->orm->mapPK($from);
 
-        $leftRightModel = $config['leftId'] ?: $model . ucfirst($pkModel);
-        $leftRightFrom  = $config['rightId'] ?: $from . ucfirst($pkFrom);
+        $leftRightModel = $config['modelId'] ?: $model . ucfirst($pkModel);
+        $leftRightFrom  = $config['itemId'] ?: $from . ucfirst($pkFrom);
 
         return $this->orm->repository(['right' => $model])
             ->select(['right.*'])
-            ->join(['leftRight' => $table])
+            ->join(['leftRight' => $table])->inner()
             ->on('right.' . $pkModel, 'leftRight.' . $leftRightModel)
             ->where('leftRight.' . $leftRightFrom, $this->id());
     }
@@ -359,6 +359,11 @@ class Entity implements \JsonSerializable
     public function asArray()
     {
         return array_merge($this->origin, $this->modify);
+    }
+
+    public function __debugInfo()
+    {
+        return $this->asArray();
     }
 
     /**

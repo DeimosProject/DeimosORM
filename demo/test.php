@@ -7,6 +7,11 @@ class User extends \Deimos\ORM\Entity
 
 }
 
+class Role extends \Deimos\ORM\Entity
+{
+
+}
+
 $builder = new \Deimos\Builder\Builder();
 
 $configObject = new \Deimos\Config\ConfigObject($builder, [
@@ -56,35 +61,36 @@ $orm = new \Deimos\ORM\ORM($builder, $database);
 //
 //]);
 
+$orm->register('role', Role::class);
+
 $orm->register('user', User::class, [
 
     // array key === callback name
     'roles'  => [
         'type'  => 'manyToMany',
-        'table' => 'rolesUsers',  // optional, default usersRoles
-
-        //        'left'   => 'role',
-                'leftId' => 'roleId',    // optional
-        //
-        //        'right'   => 'user',      // optional [callback name for roles]
-                'rightId' => 'userId',   // optional
+//        'table' => 'rolesUsers',  // optional, default usersRoles
+//
+                'left'   => 'role',
+                'leftId' => 'roleKey',    // optional
+//        //
+//        //        'right'   => 'user',      // optional [callback name for roles]
+                'rightId' => 'user_id',   // optional
     ],
 
     // array key === callback name
     'images' => [
         'type'  => 'oneToMany',
-        'table' => 'images',// optional, default usersImages
 
         'left' => 'image',
 
-        'right' => 'user',      // optional [callback name for image]
-        //        'rightId' => 'user_id',   // optional
+//        'right' => 'user',      // optional [callback name for image]
+                'rightId' => 'user_key',   // optional
     ],
 
 ]);
 
 $user = $orm->repository('user')
-    ->orderBy('id', 'DESC')
+//    ->orderBy('id', 'DESC')
     ->findOne();
 
 if (!$user)
@@ -95,10 +101,10 @@ if (!$user)
     ]);
 }
 
-// todo
-//$user->fetch('roles', ['images1' =>  'images']);
+$roles = $user->roles();
 
-//$user->roles() // manyToMany, oneToMany
+var_dump( $roles->findOne()->users()->find() );
+
 //$role->user()
 
 //var_dump($user->roles()->find(false));

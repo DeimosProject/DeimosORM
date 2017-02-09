@@ -113,13 +113,14 @@ class Relationships
         }
 
         $this->map[$this->left] = [
-            'type'   => $type,
-            'table'  => $table,
-            'model'  => $left,
-            'from'   => $this->left,
-            'item'   => $item,
-            'itemId' => $rightId,
-            'isLeft' => 1
+            'type'    => $type,
+            'table'   => $table,
+            'model'   => $left,
+            'modelId' => $leftId,
+            'from'    => $this->left,
+            'item'    => $item,
+            'itemId'  => $rightId,
+            'isLeft'  => 1
         ];
 
         $item = $right;
@@ -129,13 +130,14 @@ class Relationships
         }
 
         $this->map[$this->right] = [
-            'type'   => $type,
-            'table'  => $table,
-            'model'  => $this->left,
-            'from'   => $left,
-            'item'   => $item,
-            'itemId' => $leftId,
-            'isLeft' => 0
+            'type'    => $type,
+            'table'   => $table,
+            'model'   => $this->left,
+            'modelId' => $rightId,
+            'from'    => $left,
+            'item'    => $item,
+            'itemId'  => $leftId,
+            'isLeft'  => 0
         ];
 
         $this->init = true;
