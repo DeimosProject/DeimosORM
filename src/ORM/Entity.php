@@ -159,10 +159,14 @@ class Entity implements \JsonSerializable
     /**
      * @param string $name
      * @param mixed  $value
+     *
+     * @return static
      */
     public function set($name, $value)
     {
         $this->modify[$name] = $value;
+
+        return $this;
     }
 
     /**
@@ -359,11 +363,6 @@ class Entity implements \JsonSerializable
     public function asArray()
     {
         return array_merge($this->origin, $this->modify);
-    }
-
-    public function __debugInfo()
-    {
-        return $this->asArray();
     }
 
     /**
