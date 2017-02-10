@@ -109,12 +109,18 @@ var_dump( $roles->findOne()->users()->find() );
 
 //var_dump($user->roles()->find(false));
 //die;
+
 //(new User($orm))->save([
 //    'first_name' => 'test',
 //    'last_name' => 'test',
 //]);
 
 //$orm->create('user')->save([
+//    'first_name' => 'test',
+//    'last_name' => 'test',
+//]);
+
+//$orm->create('user', [
 //    'first_name' => 'test',
 //    'last_name' => 'test',
 //]);
