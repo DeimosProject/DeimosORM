@@ -148,10 +148,7 @@ class Relationships
      */
     public function getLeft()
     {
-        if (!$this->init)
-        {
-            $this->init();
-        }
+        $this->init OR $this->init();
 
         return $this->map[$this->left];
     }
@@ -161,10 +158,7 @@ class Relationships
      */
     public function getRight()
     {
-        if (!$this->init)
-        {
-            $this->init();
-        }
+        $this->init OR $this->init();
 
         return $this->map[$this->right];
     }

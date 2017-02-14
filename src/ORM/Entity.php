@@ -128,17 +128,18 @@ class Entity implements \JsonSerializable
 
     /**
      * @param string $name
+     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($name)
+    public function get($name, $default = null)
     {
         if (isset($this->modify[$name]))
         {
             return $this->modify[$name];
         }
 
-        return $this->origin[$name];
+        return $this->origin[$name] ?? $default;
     }
 
     /**
@@ -243,7 +244,7 @@ class Entity implements \JsonSerializable
         {
             $key = $config['itemId'];
         }
-        else if ($config['model'] !== $config['item'])
+        else if (($config['model'] !== $config['item']) ^ ($config['model'] !== $config['from']))
         {
             $key = $config['from'] . ucfirst($this->primaryKey);
         }
@@ -367,6 +368,14 @@ class Entity implements \JsonSerializable
     public function asArray()
     {
         return array_merge($this->origin, $this->modify);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return json_encode($this);
     }
 
     /**
