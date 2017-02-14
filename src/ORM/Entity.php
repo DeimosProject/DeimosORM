@@ -70,7 +70,11 @@ class Entity implements \JsonSerializable
      */
     public function __construct($orm, $isNew = true, $table = null)
     {
-        $this->table    = $table;
+        if ($table)
+        {
+            $this->table    = $table;
+        }
+
         $this->orm      = $orm;
         $this->database = $orm->database();
         $this->isNew    = $isNew;
@@ -105,7 +109,7 @@ class Entity implements \JsonSerializable
         if (!$this->table && self::class !== static::class)
         {
             $ref   = new \ReflectionClass(static::class);
-            $table = $ref->getName();
+            $table = $ref->getShortName();
             $table = lcfirst($table);
 
             return Inflector::pluralize($table);

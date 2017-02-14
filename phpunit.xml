@@ -1,8 +1,8 @@
 <phpunit bootstrap="tests/bootstrap.php">
 
     <testsuites>
-        <testsuite name="Query">
-            <directory>tests/Test/Query</directory>
+        <testsuite name="Orm">
+            <directory suffix=".php">tests/Test/Orm</directory>
         </testsuite>
     </testsuites>
 
