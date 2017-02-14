@@ -1,4 +1,7 @@
 build:
+  dependencies:
+      before:
+          - 'apt install php-sqlite3'
   environment:
      php:
        version: 7.0.8
