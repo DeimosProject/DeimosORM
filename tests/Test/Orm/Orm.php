@@ -24,8 +24,8 @@ class BuildTest extends \PHPUnit\Framework\TestCase
         $builder = new \Deimos\Builder\Builder();
 
         $configObject = new \Deimos\Config\ConfigObject($builder, [
-            'adapter'  => 'sqlite',
-            'file' => ':memory:',
+            'adapter' => 'sqlite',
+            'file'    => new \Deimos\Temp\File(),
         ]);
 
         $this->database = new \Deimos\Database\Database($configObject);
