@@ -25,7 +25,7 @@ class BuildTest extends \PHPUnit\Framework\TestCase
 
         $configObject = new \Deimos\Config\ConfigObject($builder, [
             'adapter' => 'sqlite',
-            'file'    => new \Deimos\Temp\File(),
+            'file'    => ':memory:',
         ]);
 
         $this->database = new \Deimos\Database\Database($configObject);
@@ -41,16 +41,18 @@ class BuildTest extends \PHPUnit\Framework\TestCase
         $faker = \Faker\Factory::create();
 
         $i = 60;
-        do {
+        do
+        {
             $this->database->rawQuery('INSERT INTO events2users (event_id, user_id) VALUES (?, ?)', [
-                ($i%10) + 1,
-                ((int)($i/3)) + 1
+                ($i % 10) + 1,
+                ((int)($i / 3)) + 1
             ]);
             $this->database->rawQuery('INSERT INTO events2users2 (eventId, userId) VALUES (?, ?)', [
-                ($i%10) + 1,
-                ((int)($i/3)) + 1
+                ($i % 10) + 1,
+                ((int)($i / 3)) + 1
             ]);
-        } while($i--);
+        }
+        while ($i--);
 
         $this->orm = new \Deimos\ORM\ORM($builder, $this->database);
 
@@ -61,29 +63,29 @@ class BuildTest extends \PHPUnit\Framework\TestCase
             ],
 
             'one2many' => [
-                'class' => E2U::class,
+                'class'     => E2U::class,
                 'relations' => [
                     'user' => [
-                        'type' => 'oneToMany',
+                        'type'   => 'oneToMany',
                         'leftId' => 'user_id',
                     ]
                 ]
             ],
 
             'user' => [
-                'class' => Entity::class,
+                'class'     => Entity::class,
                 'relations' => [
                     'event' => [
-                        'table' => 'events2users',
-                        'type'  => 'manyToMany',
-                        'leftId' => 'user_id',
+                        'table'   => 'events2users',
+                        'type'    => 'manyToMany',
+                        'leftId'  => 'user_id',
                         'rightId' => 'event_id',
                     ]
                 ]
             ],
 
             'one2many2' => [
-                'class' => E2U2::class,
+                'class'     => E2U2::class,
                 'relations' => [
                     'user' => [
                         'type' => 'oneToMany'
@@ -98,19 +100,23 @@ class BuildTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $i = 30;
-        do {
+        do
+        {
             $this->orm->create('event', [
-                'num' => random_int(-10000, 10000),
+                'num'   => random_int(-10000, 10000),
                 'event' => $faker->name
             ]);
-        } while($i--);
+        }
+        while ($i--);
 
         $i = 30;
-        do {
+        do
+        {
             $this->orm->create('user', [
                 'name' => $faker->name
             ]);
-        } while($i--);
+        }
+        while ($i--);
     }
 
     public function testOne2Many()
@@ -275,7 +281,7 @@ class Event extends Entity
 class E2U2 extends Entity
 {
     protected $primaryKey = 'myPrimaryKey';
-    protected $table = 'events2users2';
+    protected $table      = 'events2users2';
 }
 
 class E2U extends Entity
