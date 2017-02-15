@@ -1,7 +1,4 @@
 build:
-  dependencies:
-      before:
-          - apt-cache search sqlite3 | grep php
   environment:
      php:
        version: 7.0.8
