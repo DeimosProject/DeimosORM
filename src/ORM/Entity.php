@@ -325,7 +325,7 @@ class Entity implements \JsonSerializable
             ->from($this->tableName())
             ->values($this->modify)
             ->where($this->primaryKey, $this->id())
-            ->updateOne();
+            ->update();
 
         if ($update)
         {
