@@ -57,4 +57,4 @@ $orm->register('user', User::class, [
 
 \Deimos\ORM\StaticORM::setORM($orm);
 
-var_dump(User::first());
+var_dump(User::findById(1));

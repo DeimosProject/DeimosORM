@@ -431,7 +431,37 @@ class Entity implements \JsonSerializable
      */
     public static function query()
     {
-        return StaticORM::getORM()->repository(static::modelName());
+        return StaticORM::getORM()
+            ->repository(static::modelName());
+    }
+
+    /**
+     * @param array $storage
+     *
+     * @return static
+     *
+     * @throws ModelNotLoad
+     * @throws ModelNotModify
+     */
+    public static function create(array $storage)
+    {
+        return StaticORM::getORM()
+            ->create(static::modelName(), $storage);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return bool
+     */
+    public static function deleteById($id)
+    {
+        $orm = StaticORM::getORM();
+
+        return (bool)$orm->database()->delete()
+            ->from($orm->mapTable(static::modelName()))
+            ->where(static::primary(), $id)
+            ->delete();
     }
 
     /**
