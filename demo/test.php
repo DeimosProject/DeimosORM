@@ -20,7 +20,7 @@ $configObject = new \Deimos\Config\ConfigObject($builder, [
     //    'port'     => 3306, // optional
     'database' => 'test',
     'username' => 'root',
-    'password' => ''
+    'password' => 'root'
 ]);
 
 $database = new \Deimos\Database\Database($configObject);

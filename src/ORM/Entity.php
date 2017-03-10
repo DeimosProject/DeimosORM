@@ -404,4 +404,64 @@ class Entity implements \JsonSerializable
         $this->toLoad();
     }
 
+    /**
+     * @return string
+     */
+    protected static function modelName()
+    {
+        $orm   = StaticORM::getORM();
+        $self  = new static($orm);
+        $ref   = new \ReflectionClass($self);
+        $short = $ref->getShortName();
+
+        return lcfirst($short);
+    }
+
+    /**
+     * @return string
+     */
+    protected static function primary()
+    {
+        return (new static(StaticORM::getORM()))
+            ->primaryKey();
+    }
+
+    /**
+     * @return Queries\Query
+     */
+    public static function query()
+    {
+        return StaticORM::getORM()->repository(static::modelName());
+    }
+
+    /**
+     * @return static
+     */
+    public static function first()
+    {
+        return static::query()->findOne();
+    }
+
+    /**
+     * @return static
+     */
+    public static function last()
+    {
+        return static::query()
+            ->orderBy(static::primary(), 'DESC')
+            ->findOne();
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return static
+     */
+    public static function findById($id)
+    {
+        return static::query()
+            ->where(static::primary(), $id)
+            ->findOne();
+    }
+
 }
