@@ -369,6 +369,14 @@ class Entity implements \JsonSerializable
     {
         return array_merge($this->origin, $this->modify);
     }
+    
+    /**
+     * @return array
+     */
+    public function getModify()
+    {
+        return $this->modify;   
+    }
 
     /**
      * @return string
