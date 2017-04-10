@@ -22,13 +22,13 @@ class BuildTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $builder = new \Deimos\Builder\Builder();
-
-        $configObject = new \Deimos\Config\ConfigObject($builder, [
+        $helper  = new \Deimos\Helper\Helper($builder);
+        $slice   = new \Deimos\Slice\Slice($helper, [
             'adapter' => 'sqlite',
             'file'    => ':memory:',
         ]);
 
-        $this->database = new \Deimos\Database\Database($configObject);
+        $this->database = new \Deimos\Database\Database($slice);
 
         $this->database->exec('CREATE TABLE IF NOT EXISTS events (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,num INTEGER NOT NULL,event TEXT NOT NULL)');
         $this->database->exec('CREATE TABLE IF NOT EXISTS users (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL)');
@@ -54,7 +54,7 @@ class BuildTest extends \PHPUnit\Framework\TestCase
         }
         while ($i--);
 
-        $this->orm = new \Deimos\ORM\ORM($builder, $this->database);
+        $this->orm = new \Deimos\ORM\ORM($helper, $this->database);
 
         $this->orm->setConfig([
 

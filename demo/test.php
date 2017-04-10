@@ -13,8 +13,8 @@ class Role extends \Deimos\ORM\Entity
 }
 
 $builder = new \Deimos\Builder\Builder();
-
-$configObject = new \Deimos\Config\ConfigObject($builder, [
+$helper  = new \Deimos\Helper\Helper($builder);
+$slice   = new \Deimos\Slice\Slice($helper, [
     'adapter'  => 'mysql',
     //    'host'     => 'localhost', // optional
     //    'port'     => 3306, // optional
@@ -23,9 +23,9 @@ $configObject = new \Deimos\Config\ConfigObject($builder, [
     'password' => 'root'
 ]);
 
-$database = new \Deimos\Database\Database($configObject);
+$database = new \Deimos\Database\Database($slice);
 
-$orm = new \Deimos\ORM\ORM($builder, $database);
+$orm = new \Deimos\ORM\ORM($helper, $database);
 
 //$orm->setConfig([
 //

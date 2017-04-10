@@ -2,16 +2,16 @@
 
 namespace Deimos\ORM;
 
-use Deimos\Config\ConfigObject;
+use Deimos\Slice\Slice;
 use Doctrine\Common\Inflector\Inflector;
 
 class Relationships
 {
 
     /**
-     * @var ConfigObject
+     * @var Slice
      */
-    protected $config;
+    protected $slice;
 
     /**
      * @var array
@@ -46,13 +46,13 @@ class Relationships
     protected $init;
 
     /**
-     * @param ConfigObject $config
+     * @param Slice $slice
      *
      * @return static
      */
-    public function config(ConfigObject $config)
+    public function config(Slice $slice)
     {
-        $this->config = $config;
+        $this->slice = $slice;
 
         return $this;
     }
@@ -86,25 +86,25 @@ class Relationships
         $leftTable  = Inflector::pluralize($this->left);
         $rightTable = Inflector::pluralize($this->right);
 
-        $type  = $this->config->get('type');
-        $table = $this->config->get('table', $leftTable . ucfirst($rightTable));
-        $left  = $this->config->get('left');
+        $type  = $this->slice->getData('type');
+        $table = $this->slice->getData('table', $leftTable . ucfirst($rightTable));
+        $left  = $this->slice->getData('left');
 
         if ($left === null)
         {
             $left = Inflector::singularize($this->right);
         }
 
-        $leftId = $this->config->get('leftId');
+        $leftId = $this->slice->getData('leftId');
 
-        $right = $this->config->get('right');
+        $right = $this->slice->getData('right');
 
         if ($right === null)
         {
             $right = Inflector::singularize($this->left);
         }
 
-        $rightId = $this->config->get('rightId');
+        $rightId = $this->slice->getData('rightId');
 
         $item = $this->right;
         if (in_array($type, $this->leftPluralize, true))

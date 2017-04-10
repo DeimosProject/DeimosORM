@@ -3,8 +3,9 @@
 namespace Deimos\ORM;
 
 use Deimos\Builder\Builder;
-use Deimos\Config\ConfigObject;
 use Deimos\Database\Database;
+use Deimos\Helper\Helper;
+use Deimos\Slice\Slice;
 use Doctrine\Common\Inflector\Inflector;
 
 class ORM
@@ -52,12 +53,12 @@ class ORM
     /**
      * ORM constructor.
      *
-     * @param Builder  $builder
+     * @param Helper   $helper
      * @param Database $database
      */
-    public function __construct(Builder $builder, Database $database)
+    public function __construct(Helper $helper, Database $database)
     {
-        $this->builder  = $builder;
+        $this->helper   = $helper;
         $this->database = $database;
     }
 
@@ -121,7 +122,7 @@ class ORM
     {
         foreach ($allConfig as $right => $config)
         {
-            $object = new ConfigObject($this->builder, $config);
+            $object = new Slice($this->helper, $config);
 
             $type = $object->getRequired('type');
 
