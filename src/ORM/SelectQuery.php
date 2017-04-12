@@ -93,9 +93,20 @@ class SelectQuery extends Query
                 'state'     => Entity::STATE_QUERY,
                 'tableName' => $table
             ]);
-
-            $object(Entity::STATE_LOADED);
-
+            
+            if (!$object)
+            {
+                $object = new $model(
+                    $this->builder,
+                    Entity::STATE_CREATED,
+                    $table
+                );
+            }
+            else
+            {
+                $object(Entity::STATE_LOADED);
+            }
+            
             return $object;
         }
 
