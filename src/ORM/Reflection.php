@@ -41,9 +41,14 @@ class Reflection
                 return $class;
             }
 
-            $refProperty = $this->getProperty($class, 'tableName');
+            $reflectionClass = new \ReflectionClass($class);
+//            $refProperty = $this->getProperty($class, 'tableName');
 
-            $this->tableList[$class] = $refProperty->getValue(new $class(null));
+            $ref = $reflectionClass
+                ->getProperty('tableName');
+            $ref->setAccessible(true);
+
+            $this->tableList[$class] =  $ref->getValue(new $class(null));
 
             if (!$this->tableList[$class])
             {
