@@ -37,7 +37,7 @@ class Query extends \Deimos\Database\Queries\Query
      */
     public function __construct(ORM $orm, $modelName)
     {
-        parent::__construct($orm->database());
+        parent::__construct($orm->database(), $orm->database()->connectionName());
 
         $alias = $modelName;
         if (is_array($modelName))
