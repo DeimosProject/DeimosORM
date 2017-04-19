@@ -12,6 +12,11 @@ class Role extends \Deimos\ORM\Entity
 
 }
 
+class Asd extends \Deimos\ORM\Entity
+{
+    protected $table = 'asd';
+}
+
 $builder = new \Deimos\Builder\Builder();
 $helper  = new \Deimos\Helper\Helper($builder);
 $slice   = new \Deimos\Slice\Slice($helper, [
@@ -62,6 +67,7 @@ $orm = new \Deimos\ORM\ORM($helper, $database);
 //]);
 
 $orm->register('role', Role::class);
+$orm->register('asd', Asd::class);
 
 $orm->register('user', User::class, [
 
@@ -86,11 +92,16 @@ $orm->register('user', User::class, [
 //        'right' => 'user',      // optional [callback name for image]
     ],
 
+    'asd' => [
+        'type' => 'oneToMany',
+        'left' => 'asd'
+    ]
+
 ]);
 
 $user = $orm->repository('user')
 //    ->orderBy('id', 'DESC')
-    ->findOne(true);
+    ->findOne();
 
 if (!$user)
 {
@@ -100,7 +111,8 @@ if (!$user)
     ]);
 }
 
-var_dump( $user->images[0]->user->images );die;
+echo $user;
+die;
 
 //$role->user()
 

@@ -75,7 +75,7 @@ class Query extends \Deimos\Database\Queries\Query
      */
     public function find($asObject = true)
     {
-        if ($asObject)
+        if (false !== $asObject)
         {
             $objects = $this
                 ->database
@@ -102,13 +102,13 @@ class Query extends \Deimos\Database\Queries\Query
     }
 
     /**
-     * @param bool $asObject
+     * @param array $asObject
      *
      * @return array|Entity
      */
-    public function findOne($asObject = true)
+    public function findOne($asObject = [])
     {
-        if ($asObject)
+        if (false !== $asObject)
         {
             $self = clone $this;
             $self->limit(1);

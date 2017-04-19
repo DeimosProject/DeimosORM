@@ -268,7 +268,7 @@ class Entity implements \JsonSerializable
         {
             $key = $config['itemId'];
         }
-        else if ($config['model'] !== $config['item'])
+        else if ($config['isLeft'])
         {
             $key = $config['from'] . ucfirst($this->primaryKey);
         }
@@ -391,7 +391,7 @@ class Entity implements \JsonSerializable
      */
     public function asArray()
     {
-        return array_merge($this->origin, $this->modify);
+        return array_merge($this->origin, $this->modify, $this->relations);
     }
     
     /**
@@ -434,6 +434,11 @@ class Entity implements \JsonSerializable
     public function __invoke()
     {
         $this->toLoad();
+    }
+
+    public function getModelName()
+    {
+        return $this->modelName;
     }
 
     /**
