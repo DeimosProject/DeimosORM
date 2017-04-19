@@ -90,7 +90,7 @@ $orm->register('user', User::class, [
 
 $user = $orm->repository('user')
 //    ->orderBy('id', 'DESC')
-    ->findOne();
+    ->findOne(true);
 
 if (!$user)
 {
@@ -100,11 +100,7 @@ if (!$user)
     ]);
 }
 
-$roles = $user->roles();
-
-var_dump( $roles->findOne()->users()->find() );
-
-var_dump( $user->images->findOne()->user );die;
+var_dump( $user->images[0]->user->images );die;
 
 //$role->user()
 

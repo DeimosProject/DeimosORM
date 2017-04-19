@@ -143,17 +143,19 @@ class Entity implements \JsonSerializable
 
         if (isset($configure[$name]))
         {
-            if ($configure[$name]['type'] === 'oneToMany' && $configure[$name]['model'] === $name)
+            if (!isset($this->relations[$name]))
             {
-                if (!isset($this->relations[$name]))
+                if ($configure[$name]['type'] === 'oneToMany' && !$configure[$name]['isLeft'])
                 {
                     $this->relations[$name] = $this->$name()->findOne();
                 }
-
-                return $this->relations[$name];
+                else
+                {
+                    $this->relations[$name] = $this->$name()->find();
+                }
             }
 
-            return $this->$name();
+            return $this->relations[$name];
         }
 
         if (isset($this->modify[$name]))
