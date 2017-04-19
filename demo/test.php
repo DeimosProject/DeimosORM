@@ -71,10 +71,10 @@ $orm->register('user', User::class, [
 //        'table' => 'rolesUsers',  // optional, default usersRoles
 //
                 'left'   => 'role',
-                'leftId' => 'roleKey',    // optional
+                'leftId' => 'roleId',    // optional
 //        //
 //        //        'right'   => 'user',      // optional [callback name for roles]
-                'rightId' => 'user_id',   // optional
+                'rightId' => 'userId',   // optional
     ],
 
     // array key === callback name
@@ -84,7 +84,6 @@ $orm->register('user', User::class, [
         'left' => 'image',
 
 //        'right' => 'user',      // optional [callback name for image]
-                'rightId' => 'user_key',   // optional
     ],
 
 ]);
@@ -104,6 +103,8 @@ if (!$user)
 $roles = $user->roles();
 
 var_dump( $roles->findOne()->users()->find() );
+
+var_dump( $user->images->findOne()->user );die;
 
 //$role->user()
 

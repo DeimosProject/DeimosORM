@@ -62,6 +62,11 @@ class Entity implements \JsonSerializable
     protected $modify = [];
 
     /**
+     * @var array
+     */
+    protected $relations = [];
+
+    /**
      * User constructor.
      *
      * @param ORM    $orm
@@ -134,6 +139,23 @@ class Entity implements \JsonSerializable
      */
     public function get($name, $default = null)
     {
+        $configure = $this->orm->config($this->modelName);
+
+        if (isset($configure[$name]))
+        {
+            if ($configure[$name]['type'] === 'oneToMany' && $configure[$name]['model'] === $name)
+            {
+                if (!isset($this->relations[$name]))
+                {
+                    $this->relations[$name] = $this->$name()->findOne();
+                }
+
+                return $this->relations[$name];
+            }
+
+            return $this->$name();
+        }
+
         if (isset($this->modify[$name]))
         {
             return $this->modify[$name];
@@ -213,7 +235,7 @@ class Entity implements \JsonSerializable
 
         if (!$config)
         {
-            throw new \InvalidArgumentException('Config model not found');
+            throw new \InvalidArgumentException('Config model `' . $this->modelName . '` not found');
         }
 
         return $this->relation($config[$name], $arguments);
@@ -244,7 +266,7 @@ class Entity implements \JsonSerializable
         {
             $key = $config['itemId'];
         }
-        else if (($config['model'] !== $config['item']) ^ ($config['model'] !== $config['from']))
+        else if ($config['model'] !== $config['item'])
         {
             $key = $config['from'] . ucfirst($this->primaryKey);
         }
