@@ -102,13 +102,13 @@ class Query extends \Deimos\Database\Queries\Query
     }
 
     /**
-     * @param array $asObject
+     * @param array|boolean $preload
      *
      * @return array|Entity
      */
-    public function findOne($asObject = [])
+    public function findOne($preload = [])
     {
-        if (false !== $asObject)
+        if (false !== $preload)
         {
             $self = clone $this;
             $self->limit(1);
@@ -132,6 +132,14 @@ class Query extends \Deimos\Database\Queries\Query
 
             $object();
             $object->setModelName($this->modelName);
+
+            if (is_array($preload))
+            {
+                foreach ($preload as $load)
+                {
+                    $object->$load;
+                }
+            }
 
             $sth->closeCursor();
 

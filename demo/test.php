@@ -101,7 +101,7 @@ $orm->register('user', User::class, [
 
 $user = $orm->repository('user')
 //    ->orderBy('id', 'DESC')
-    ->findOne();
+    ->findOne(['images', 'asd', 'roles']);
 
 if (!$user)
 {

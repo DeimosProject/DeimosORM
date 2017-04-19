@@ -31,7 +31,6 @@ class ORM
      */
     protected $tableMap = [];
 
-
     /**
      * @var string[]
      */
@@ -94,8 +93,8 @@ class ORM
     {
         foreach ($storage as $modelName => $config)
         {
-            $class     = isset($config['class']) ? $config['class'] : Entity::class;
-            $relations = isset($config['relations']) ? $config['relations'] : [];
+            $class     = $config['class'] ?? Entity::class;
+            $relations = $config['relations'] ?? [];
 
             $this->register($modelName, $class, $relations);
         }

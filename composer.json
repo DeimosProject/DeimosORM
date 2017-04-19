@@ -18,7 +18,8 @@
   "require": {
     "php": "^7.0",
     "doctrine/inflector": "~1.0",
-    "deimos/database": "~2.0"
+    "deimos/database": "~2.0",
+    "phpixie/orm": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.0",
