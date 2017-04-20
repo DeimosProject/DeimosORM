@@ -262,7 +262,8 @@ class Entity implements \JsonSerializable
      */
     protected function oneToMany(array &$config, array &$arguments)
     {
-        $key = $this->primaryKey;
+        $key   = $this->primaryKey;
+        $value = $this->id();
 
         if ($config['itemId'])
         {
@@ -272,9 +273,15 @@ class Entity implements \JsonSerializable
         {
             $key = $config['from'] . ucfirst($this->primaryKey);
         }
+        else if ($config['model'] === $config['item'])
+        {
+            $key = $this->orm->mapPK($config['item']);;
+            $id    = $config['item'] . ucfirst($key);
+            $value = $this->$id;
+        }
 
         return $this->orm->repository($config['model'])
-            ->where($key, $this->id());
+            ->where($key, $value);
     }
 
     /**
