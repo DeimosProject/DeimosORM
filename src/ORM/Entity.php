@@ -297,21 +297,12 @@ class Entity implements \JsonSerializable
         $leftRightModel = $config['modelId'] ?: $model . ucfirst($pkModel);
         $leftRightFrom  = $config['itemId'] ?: $from . ucfirst($pkFrom);
 
-//        SELECT `right`.`*` FROM `roles` AS `right`  INNER JOIN `usersRoles` AS `leftRight` ON (`right`.`id` = `leftRight`.`roleId`) WHERE ( (`leftRight`.`userId` = '1') )
-
         $ids = $this->orm->repository($table)
             ->select($leftRightModel)
-            ->where($leftRightFrom, $this->id())
-            ->find(false);
+            ->where($leftRightFrom, $this->id());
 
         return $this->orm->repository($model)
-            ->where($this->orm->mapPK($model), array_map('current', $ids));
-
-//        return $this->orm->repository(['right' => $model])
-//            ->select(['right.*'])
-//            ->join(['leftRight' => $table])->inner()
-//            ->on('right.' . $pkModel, 'leftRight.' . $leftRightModel)
-//            ->where('leftRight.' . $leftRightFrom, $this->id());
+            ->where($this->orm->mapPK($model), 'IN', $ids);
     }
 
     /**
