@@ -32,8 +32,8 @@ class Query extends \Deimos\Database\Queries\Query
     /**
      * Instruction constructor.
      *
-     * @param ORM    $orm
-     * @param string $modelName
+     * @param ORM          $orm
+     * @param string|array $modelName
      */
     public function __construct(ORM $orm, $modelName)
     {
