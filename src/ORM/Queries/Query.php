@@ -104,7 +104,7 @@ class Query extends \Deimos\Database\Queries\Query
     /**
      * @param array|boolean $preload
      *
-     * @return array|Entity
+     * @return null|array|Entity
      */
     public function findOne($preload = [])
     {
