@@ -275,7 +275,7 @@ class Entity implements \JsonSerializable
         }
         else if ($config['model'] === $config['item'])
         {
-            $key = $this->orm->mapPK($config['item']);;
+            $key = $this->orm->mapPK($config['item']);
             $id    = $config['item'] . ucfirst($key);
             $value = $this->$id;
         }
